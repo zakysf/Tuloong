@@ -1,0 +1,127 @@
+{
+  "communities": {
+    "0": [
+      "prd_claims_table",
+      "prd_messages_table",
+      "prd_mitra",
+      "prd_reports_table",
+      "prd_reviews_table",
+      "prd_transactions_table"
+    ],
+    "1": [
+      "prd_admin",
+      "prd_badge_system",
+      "prd_mitra_profiles_table",
+      "prd_users_table"
+    ],
+    "2": [
+      "prd_laravel",
+      "prd_nextjs",
+      "prd_reverb",
+      "prd_supabase"
+    ],
+    "3": [
+      "prd_midtrans",
+      "prd_pelanggan",
+      "prd_posts_table"
+    ],
+    "4": [
+      "prd_cloudinary"
+    ],
+    "5": [
+      "prd_donation_flow"
+    ],
+    "6": [
+      "prd_tuloong"
+    ]
+  },
+  "cohesion": {
+    "0": 0.3333333333333333,
+    "1": 0.5,
+    "2": 0.5,
+    "3": 0.6666666666666666,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0
+  },
+  "gods": [
+    {
+      "id": "prd_claims_table",
+      "label": "Claims Table",
+      "degree": 5
+    },
+    {
+      "id": "prd_laravel",
+      "label": "Laravel Backend",
+      "degree": 3
+    },
+    {
+      "id": "prd_mitra_profiles_table",
+      "label": "Mitra Profiles Table",
+      "degree": 3
+    },
+    {
+      "id": "prd_posts_table",
+      "label": "Posts Table",
+      "degree": 3
+    },
+    {
+      "id": "prd_pelanggan",
+      "label": "Pelanggan (Customer)",
+      "degree": 2
+    },
+    {
+      "id": "prd_users_table",
+      "label": "Users Table",
+      "degree": 2
+    },
+    {
+      "id": "prd_transactions_table",
+      "label": "Transactions Table",
+      "degree": 2
+    },
+    {
+      "id": "prd_mitra",
+      "label": "Mitra (Partner)",
+      "degree": 1
+    },
+    {
+      "id": "prd_admin",
+      "label": "Admin",
+      "degree": 1
+    },
+    {
+      "id": "prd_nextjs",
+      "label": "Next.js Frontend",
+      "degree": 1
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Posts Table",
+      "target": "Users Table",
+      "source_files": [
+        "PRD.md",
+        "PRD.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "note": "Bridges community 1 \u2192 community 3"
+    },
+    {
+      "source": "Claims Table",
+      "target": "Posts Table",
+      "source_files": [
+        "PRD.md",
+        "PRD.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "note": "Bridges community 3 \u2192 community 0"
+    }
+  ],
+  "tokens": {
+    "input": 6059,
+    "output": 1430
+  }
+}
