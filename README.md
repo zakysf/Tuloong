@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tuloong (Frontend & Backend Integrated)
 
-## Getting Started
+Project monorepo yang berisi aplikasi Frontend (Next.js) di root folder dan Backend (Laravel) di dalam folder `backend/`.
 
-First, run the development server:
+## Struktur Direktori
+- `/` - Frontend (Next.js)
+- `/backend/` - Backend (Laravel)
 
+---
+
+## Memulai Pengembangan
+
+### 1. Menjalankan Backend (Laravel)
+Masuk ke folder `backend`, pasang dependensi, jalankan migrasi database, dan jalankan server lokal:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd backend
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
 ```
+*Backend akan berjalan secara default pada http://localhost:8000.*
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Menjalankan Frontend (Next.js)
+Buka terminal baru di root folder, pasang dependensi, dan jalankan dev server Next.js:
+```bash
+npm install
+npm run dev
+```
+*Frontend akan berjalan pada http://localhost:3000.*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Integrasi API
+Aplikasi frontend menggunakan Axios untuk komunikasi dengan API backend. Konfigurasi endpoint dapat disesuaikan pada [axios.ts](file:///d:/Justin/LOMBA/BERAKSI UPNVYK/tuloong/lib/axios.ts) yang secara default mengarah ke `http://localhost:8000` jika tidak ada env `NEXT_PUBLIC_API_URL`.
