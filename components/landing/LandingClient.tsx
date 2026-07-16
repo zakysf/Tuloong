@@ -471,38 +471,109 @@ export default function LandingClient() {
       </section>
 
       {/* ══ MITRA CALL TO ACTION ════════════════════════════════════════════ */}
-      <section className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="relative bg-[#1A5C48] rounded-[36px] overflow-hidden p-8 md:p-16">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(242,99,42,0.15),transparent_60%)] pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-[80px] pointer-events-none" />
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="relative bg-[#1A5C48] rounded-[2.5rem] overflow-hidden border border-[#1A5C48]/20 shadow-2xl shadow-[#1A5C48]/20">
+          {/* Dynamic Background */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(242,99,42,0.25),transparent_50%)] pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute -left-20 -bottom-20 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
 
-          <div className="relative z-10 max-w-xl">
-            <span className="text-xs font-bold text-emerald-300 tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full">
-              Peluang Penghasilan
-            </span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-white mt-6 leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
-              Ingin Menjadi Mitra & Menawarkan Jasa Anda?
-            </h2>
-            <p className="text-emerald-100/70 text-sm md:text-base mt-4 leading-relaxed">
-              Dapatkan akses langsung ke ratusan orderan harian di sekitar tempat tinggal Anda. Tanpa komisi potongan harga yang mencekik. Daftar hari ini, mulai terima uang hari ini juga.
-            </p>
+          {/* Grid Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 p-10 md:p-16 lg:p-20">
+            {/* Left Content */}
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md mb-8">
+                <span className="w-2 h-2 rounded-full bg-[#F2632A] animate-pulse" />
+                <span className="text-[11px] font-bold text-white tracking-widest uppercase">
+                  Peluang Penghasilan Baru
+                </span>
+              </div>
+              
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1]" style={{ fontFamily: "var(--font-heading)" }}>
+                Punya Keahlian? <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-white">Jadikan Penghasilan.</span>
+              </h2>
+              
+              <p className="text-emerald-50/80 text-base md:text-lg mt-6 leading-relaxed font-medium">
+                Tuloong memberikan Anda kebebasan. Terima orderan jasa di sekitar Anda, tentukan sendiri jam kerja, dan bawa pulang 100% uang Anda tanpa potongan komisi yang mencekik.
+              </p>
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/register/mitra">
-                <Button className="h-12 px-7 rounded-xl text-xs font-bold bg-white text-[#1A5C48] hover:bg-neutral-100 transition-all cursor-pointer">
-                  Daftar Sebagai Mitra
-                  <ArrowRight size={14} className="ml-2" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button variant="ghost" className="h-12 px-6 rounded-xl text-xs font-bold text-white hover:bg-white/10">
-                  Sudah Terdaftar? Masuk
-                </Button>
-              </Link>
+              {/* Badges/Features */}
+              <div className="mt-10 grid grid-cols-2 gap-4">
+                {[
+                  { icon: DollarSign, text: "Cair Kapan Saja" },
+                  { icon: Clock, text: "Waktu Fleksibel" },
+                  { icon: Users, text: "Bebas Tawar Harga" },
+                  { icon: ShieldCheck, text: "Aman Terpercaya" },
+                ].map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                        <Icon size={18} className="text-[#F2632A]" />
+                      </div>
+                      <span className="text-sm font-bold text-white">{item.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="mt-12 flex flex-wrap gap-4 items-center">
+                <Link href="/register/mitra">
+                  <Button className="h-14 px-8 rounded-2xl text-sm font-bold bg-[#F2632A] hover:bg-[#d9511d] text-white shadow-xl shadow-[#F2632A]/20 transition-all hover:-translate-y-1 cursor-pointer">
+                    Daftar Sebagai Mitra
+                    <ArrowUpRight size={18} className="ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="ghost" className="h-14 px-6 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
+                    Sudah Punya Akun?
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Illustration/Image Area */}
+            <div className="relative hidden lg:block h-[500px]">
+              {/* Decorative elements behind image */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A5C48] via-transparent to-transparent z-10 rounded-[2.5rem]" />
+              
+              {/* Floating Cards simulating UI */}
+              <div className="absolute top-10 -left-12 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_4s_infinite_ease-in-out]">
+                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                  <DollarSign size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Pendapatan Hari Ini</p>
+                  <p className="text-lg font-extrabold text-neutral-900">Rp 350.000</p>
+                </div>
+              </div>
+
+              <div className="absolute bottom-20 -right-8 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_5s_infinite_ease-in-out_reverse]">
+                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
+                  <Star size={20} className="fill-amber-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Rating Anda</p>
+                  <p className="text-lg font-extrabold text-neutral-900">4.9 / 5.0</p>
+                </div>
+              </div>
+
+              {/* The Image itself - assuming tuloong_hero_worker.png exists */}
+              <div className="absolute bottom-0 right-0 w-full h-[110%] flex items-end justify-center">
+                 <Image 
+                    src="/tuloong_hero_worker.png" 
+                    alt="Mitra Tuloong" 
+                    width={500} 
+                    height={600} 
+                    className="object-contain object-bottom w-[85%] h-auto relative z-0 drop-shadow-2xl filter contrast-105"
+                 />
+              </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* ══ DONATION & COMMUNITY SUPPORT ════════════════════════════════════ */}
       <section className="py-20 px-6 bg-neutral-50/50 border-t border-neutral-100">
