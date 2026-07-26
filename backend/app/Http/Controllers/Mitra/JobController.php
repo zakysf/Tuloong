@@ -12,15 +12,18 @@ class JobController extends Controller
     /**
      * GET /api/posts — daftar job open untuk mitra.
      * (Endpoint sama dengan PostController@index tapi dari perspektif mitra)
-     * Filter: search, kabupaten, urgensi.
+     * Filter: search, provinsi, kabupaten, kecamatan, urgensi.
      */
     public function index(Request $request): JsonResponse
     {
-        $filters = $request->only(['search', 'kabupaten', 'urgensi']);
+        $filters = $request->only(['search', 'provinsi', 'kabupaten', 'kecamatan', 'urgensi']);
 
         $posts = Post::open()
             ->filter($filters)
-            ->with(['user:id,nama,kecamatan,foto_profil'])
+            ->with([
+                'user:id,nama,foto_profil',
+                'user.pelangganProfile:id,user_id,provinsi,kabupaten,kecamatan',
+            ])
             ->orderByUrgensi()
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -38,7 +41,8 @@ class JobController extends Controller
     public function show(int $id): JsonResponse
     {
         $post = Post::with([
-            'user:id,nama,kecamatan,foto_profil',
+            'user:id,nama,foto_profil',
+            'user.pelangganProfile:id,user_id,provinsi,kabupaten,kecamatan',
             'claim:id,post_id,status,mitra_id',
         ])->findOrFail($id);
 

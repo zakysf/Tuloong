@@ -13,9 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
             'mitra.active' => \App\Http\Middleware\EnsureMitraActive::class,
+            'mitra.can_work' => \App\Http\Middleware\EnsureMitraCanWork::class,
         ]);
 
         $middleware->statefulApi();

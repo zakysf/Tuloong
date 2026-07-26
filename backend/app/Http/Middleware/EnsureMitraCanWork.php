@@ -6,13 +6,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureMitraActive
+class EnsureMitraCanWork
 {
     /**
-     * Handle an incoming request.
-     * Hanya mitra dengan verification_status = aktif.
-     * Dipakai untuk klaim job baru. Job berjalan memakai EnsureMitraCanWork
-     * agar pending_update tidak mengunci update status.
+     * Izinkan mitra yang sudah pernah aktif mengakses job berjalan.
+     * Status verification: aktif ATAU pending_update (PRD: job berjalan tidak terganggu).
+     * Klaim job baru tetap diproteksi oleh EnsureMitraActive.
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -26,11 +25,12 @@ class EnsureMitraActive
         }
 
         $mitraProfile = $user->mitraProfile;
+        $allowed = ['aktif', 'pending_update'];
 
-        if (!$mitraProfile || $mitraProfile->verification_status !== 'aktif') {
+        if (!$mitraProfile || !in_array($mitraProfile->verification_status, $allowed, true)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Akun mitra belum aktif atau sedang dalam proses verifikasi. Anda tidak dapat mengklaim job baru.',
+                'message' => 'Akun mitra belum aktif atau sedang dalam proses verifikasi',
             ], 403);
         }
 

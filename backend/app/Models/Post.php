@@ -64,7 +64,7 @@ class Post extends Model
     }
 
     /**
-     * Scope: filter berdasarkan search, kabupaten, dan urgensi.
+     * Scope: filter berdasarkan search, lokasi, dan urgensi.
      */
     public function scopeFilter($query, array $filters)
     {
@@ -76,8 +76,16 @@ class Post extends Model
             });
         }
 
+        if (!empty($filters['provinsi'])) {
+            $query->where('provinsi', $filters['provinsi']);
+        }
+
         if (!empty($filters['kabupaten'])) {
             $query->where('kabupaten', $filters['kabupaten']);
+        }
+
+        if (!empty($filters['kecamatan'])) {
+            $query->where('kecamatan', $filters['kecamatan']);
         }
 
         if (!empty($filters['urgensi'])) {

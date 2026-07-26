@@ -68,20 +68,32 @@ class MitraVerificationController extends Controller
             ], 400);
         }
 
-        DB::transaction(function () use ($request, $user, $mitraProfile) {
+        $wasPendingUpdate = $mitraProfile->verification_status === 'pending_update';
+
+        DB::transaction(function () use ($request, $user, $mitraProfile, $wasPendingUpdate) {
             $newStatus = $request->status;
 
             if ($newStatus === 'aktif') {
                 $mitraProfile->update([
                     'verification_status' => 'aktif',
                 ]);
+            } elseif ($wasPendingUpdate) {
+                // Tolak perubahan data sensitif: mitra tetap aktif, job berjalan tidak terganggu.
+                // Catatan: rollback nilai lama butuh tabel draft (belum ada di schema).
+                $mitraProfile->update([
+                    'verification_status' => 'aktif',
+                ]);
+
+                RejectionReason::create([
+                    'user_id' => $user->id,
+                    'reason'  => $request->reason,
+                ]);
             } else {
-                // Ditolak
+                // Tolak pendaftaran mitra baru
                 $mitraProfile->update([
                     'verification_status' => 'ditolak',
                 ]);
 
-                // Simpan alasan penolakan
                 RejectionReason::create([
                     'user_id' => $user->id,
                     'reason'  => $request->reason,
@@ -89,7 +101,9 @@ class MitraVerificationController extends Controller
             }
         });
 
-        $statusText = $request->status === 'aktif' ? 'disetujui' : 'ditolak';
+        $statusText = $request->status === 'aktif'
+            ? 'disetujui'
+            : ($wasPendingUpdate ? 'ditolak (status mitra tetap aktif)' : 'ditolak');
 
         return response()->json([
             'success' => true,

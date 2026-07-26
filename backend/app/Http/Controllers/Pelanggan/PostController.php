@@ -12,16 +12,19 @@ class PostController extends Controller
 {
     /**
      * GET /api/posts — daftar post open (publik).
-     * Support filter: search, kabupaten, urgensi.
+     * Support filter: search, provinsi, kabupaten, kecamatan, urgensi.
      * Order: urgensi (mendesak dulu), lalu created_at desc.
      */
     public function index(Request $request): JsonResponse
     {
-        $filters = $request->only(['search', 'kabupaten', 'urgensi']);
+        $filters = $request->only(['search', 'provinsi', 'kabupaten', 'kecamatan', 'urgensi']);
 
         $posts = Post::open()
             ->filter($filters)
-            ->with(['user:id,nama,kecamatan,foto_profil'])
+            ->with([
+                'user:id,nama,foto_profil',
+                'user.pelangganProfile:id,user_id,provinsi,kabupaten,kecamatan',
+            ])
             ->orderByUrgensi()
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -64,7 +67,8 @@ class PostController extends Controller
     public function show(int $id): JsonResponse
     {
         $post = Post::with([
-            'user:id,nama,kecamatan,foto_profil',
+            'user:id,nama,foto_profil',
+            'user.pelangganProfile:id,user_id,provinsi,kabupaten,kecamatan',
             'claim.mitra:id,nama,foto_profil',
             'claim.mitra.mitraProfile:user_id,badge,rating_rata,total_job_selesai',
         ])->findOrFail($id);

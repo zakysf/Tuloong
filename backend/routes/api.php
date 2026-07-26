@@ -119,15 +119,17 @@ Route::middleware(['auth:sanctum', 'role:pelanggan'])->group(function () {
 });
 
 // =====================================================
-// MITRA ROUTES (role: mitra + mitra aktif/terverifikasi)
+// MITRA ROUTES
+// Klaim job baru: harus verification_status = aktif
+// Job berjalan (list/status/transaksi): aktif ATAU pending_update
 // =====================================================
 Route::middleware(['auth:sanctum', 'role:mitra', 'mitra.active'])->group(function () {
-    // Browse jobs
+    Route::post('/posts/{id}/claim', [ClaimController::class, 'store']);
+});
+
+Route::middleware(['auth:sanctum', 'role:mitra', 'mitra.can_work'])->group(function () {
     Route::get('/mitra/jobs', [ClaimController::class, 'myJobs']);
     Route::get('/mitra/transactions', [TransactionController::class, 'mitraIndex']);
-
-    // Klaim & update status
-    Route::post('/posts/{id}/claim', [ClaimController::class, 'store']);
     Route::patch('/claims/{id}/status', [ClaimController::class, 'updateStatus']);
 });
 

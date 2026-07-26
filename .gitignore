@@ -12,6 +12,7 @@ frontend/.env.production.local
 # Backend
 backend/.env
 backend/vendor/
+backend/skills-lock.json
 backend/bootstrap/cache/
 backend/storage/*.key
 backend/storage/framework/cache/data/*
