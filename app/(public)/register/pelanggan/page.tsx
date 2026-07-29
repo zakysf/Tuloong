@@ -19,20 +19,21 @@ import { registerPelanggan, parseApiError } from "@/lib/services/auth.service";
 import { PROVINSI_LIST, getKabupatenList, getKecamatanList } from "@/lib/data/wilayah";
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
+// Field names match BE (Laravel) naming convention
 
 const schema = z
   .object({
-    name: z.string().min(3, "Nama minimal 3 karakter"),
+    nama: z.string().min(3, "Nama minimal 3 karakter"),
     email: z.string().email("Format email tidak valid"),
-    phone: z
+    nomor_telepon: z
       .string()
       .min(1, "Nomor telepon wajib diisi")
       .regex(/^08[0-9]{8,11}$/, "Format: 08xxxxxxxxxx (10–13 digit)"),
     password: z.string().min(8, "Kata sandi minimal 8 karakter"),
     password_confirmation: z.string().min(1, "Konfirmasi kata sandi wajib diisi"),
-    province: z.string().min(1, "Pilih provinsi"),
-    city: z.string().min(1, "Pilih kabupaten/kota"),
-    district: z.string().min(1, "Pilih kecamatan"),
+    provinsi: z.string().min(1, "Pilih provinsi"),
+    kabupaten: z.string().min(1, "Pilih kabupaten/kota"),
+    kecamatan: z.string().min(1, "Pilih kecamatan"),
     agree: z.literal(true, { message: "Kamu harus menyetujui syarat & ketentuan" }),
   })
   .refine((d) => d.password === d.password_confirmation, {
@@ -58,32 +59,33 @@ export default function RegisterPelangganPage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      province: "",
-      city: "",
-      district: "",
+      provinsi: "",
+      kabupaten: "",
+      kecamatan: "",
     },
   });
 
-  const province = watch("province");
-  const city = watch("city");
+  const provinsi = watch("provinsi");
+  const kabupaten = watch("kabupaten");
   const agreeValue = watch("agree");
 
-  const kabupatenList = getKabupatenList(province);
-  const kecamatanList = getKecamatanList(province, city);
+  const kabupatenList = getKabupatenList(provinsi);
+  const kecamatanList = getKecamatanList(provinsi, kabupaten);
 
   const onSubmit = async (data: FormData) => {
     setServerError(null);
     setFieldErrors({});
     try {
       await registerPelanggan({
-        name: data.name,
+        nama: data.nama,
         email: data.email,
-        phone: data.phone,
+        nomor_telepon: data.nomor_telepon,
         password: data.password,
         password_confirmation: data.password_confirmation,
-        province: data.province,
-        city: data.city,
-        district: data.district,
+        provinsi: data.provinsi,
+        kabupaten: data.kabupaten,
+        kecamatan: data.kecamatan,
+        role: "pelanggan",
       });
       router.push("/dashboard");
     } catch (err) {
@@ -145,8 +147,8 @@ export default function RegisterPelangganPage() {
                 <FormInput
                   label="Nama lengkap"
                   placeholder="Sesuai KTP"
-                  error={errors.name?.message ?? fieldErrors.name}
-                  {...register("name")}
+                  error={errors.nama?.message ?? fieldErrors.nama}
+                  {...register("nama")}
                 />
 
                 <FormInput
@@ -161,8 +163,8 @@ export default function RegisterPelangganPage() {
                   label="Nomor Telepon"
                   type="tel"
                   placeholder="08xxxxxxxxxx"
-                  error={errors.phone?.message ?? fieldErrors.phone}
-                  {...register("phone")}
+                  error={errors.nomor_telepon?.message ?? fieldErrors.nomor_telepon}
+                  {...register("nomor_telepon")}
                 />
 
                 <div className="grid grid-cols-2 gap-3">
@@ -196,36 +198,36 @@ export default function RegisterPelangganPage() {
                   label="Provinsi"
                   placeholder="Pilih Provinsi"
                   options={PROVINSI_LIST}
-                  value={province}
+                  value={provinsi}
                   onChange={(v) => {
-                    setValue("province", v, { shouldValidate: true });
-                    setValue("city", "");
-                    setValue("district", "");
+                    setValue("provinsi", v, { shouldValidate: true });
+                    setValue("kabupaten", "");
+                    setValue("kecamatan", "");
                   }}
-                  error={errors.province?.message ?? fieldErrors.province}
+                  error={errors.provinsi?.message ?? fieldErrors.provinsi}
                 />
 
                 <FormSelect
                   label="Kabupaten"
                   placeholder="Pilih Kabupaten"
                   options={kabupatenList}
-                  value={city}
+                  value={kabupaten}
                   onChange={(v) => {
-                    setValue("city", v, { shouldValidate: true });
-                    setValue("district", "");
+                    setValue("kabupaten", v, { shouldValidate: true });
+                    setValue("kecamatan", "");
                   }}
-                  error={errors.city?.message ?? fieldErrors.city}
-                  disabled={!province}
+                  error={errors.kabupaten?.message ?? fieldErrors.kabupaten}
+                  disabled={!provinsi}
                 />
 
                 <FormSelect
                   label="Kecamatan"
                   placeholder="Pilih Kecamatan"
                   options={kecamatanList}
-                  value={watch("district")}
-                  onChange={(v) => setValue("district", v, { shouldValidate: true })}
-                  error={errors.district?.message ?? fieldErrors.district}
-                  disabled={!city}
+                  value={watch("kecamatan")}
+                  onChange={(v) => setValue("kecamatan", v, { shouldValidate: true })}
+                  error={errors.kecamatan?.message ?? fieldErrors.kecamatan}
+                  disabled={!kabupaten}
                 />
               </div>
             </section>

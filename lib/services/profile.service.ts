@@ -1,0 +1,85 @@
+/**
+ * profile.service.ts
+ *
+ * Service layer untuk fitur Profil (BE1).
+ *
+ * Endpoints:
+ *   GET   /api/profile                 — lihat profil user yang login
+ *   PATCH /api/profile                 — update profil
+ *   POST  /api/profile/request-update  — mitra: ajukan perubahan data sensitif
+ */
+
+import api from "@/lib/axios";
+import type { User } from "@/types/auth";
+import type { BEResponse } from "@/types/post";
+
+export interface UpdateProfilePayload {
+  nama?: string;
+  nomor_telepon?: string;
+  foto_profil?: File | string;
+  // Mitra
+  deskripsi_keahlian?: string;
+  provinsi?: string;
+  kabupaten?: string;
+  kecamatan?: string;
+}
+
+export interface RequestUpdatePayload {
+  nomor_ktp?: string;
+  foto_ktp?: File;
+  nama_bank?: string;
+  nomor_rekening?: string;
+  nama_pemilik_rekening?: string;
+}
+
+// ─── Get Profile ──────────────────────────────────────────────────────────────
+
+export async function getProfile(): Promise<User> {
+  const { data } = await api.get<BEResponse<User>>("/api/profile");
+  return data.data;
+}
+
+// ─── Update Profile ───────────────────────────────────────────────────────────
+
+export async function updateProfile(
+  payload: UpdateProfilePayload
+): Promise<User> {
+  // Jika ada file (foto_profil), gunakan FormData
+  if (payload.foto_profil instanceof File) {
+    const formData = new FormData();
+    (Object.keys(payload) as Array<keyof UpdateProfilePayload>).forEach(
+      (key) => {
+        const value = payload[key];
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      }
+    );
+    const { data } = await api.patch<BEResponse<User>>("/api/profile", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data.data;
+  }
+
+  const { data } = await api.patch<BEResponse<User>>("/api/profile", payload);
+  return data.data;
+}
+
+// ─── Request Update (Mitra sensitive data) ───────────────────────────────────
+
+export async function requestProfileUpdate(
+  payload: RequestUpdatePayload
+): Promise<void> {
+  const formData = new FormData();
+  (Object.keys(payload) as Array<keyof RequestUpdatePayload>).forEach(
+    (key) => {
+      const value = payload[key];
+      if (value !== undefined && value !== null) {
+        formData.append(key, value as string | Blob);
+      }
+    }
+  );
+  await api.post("/api/profile/request-update", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+}

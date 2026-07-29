@@ -1,17 +1,17 @@
 /**
  * auth.service.ts
  *
- * Service layer for authentication. All functions call real API endpoints.
- * During development (USE_MOCK=true), mock responses are returned instead.
+ * Service layer untuk autentikasi.
+ * Semua fungsi memanggil endpoint API real (Laravel + Sanctum).
  *
  * Endpoints:
  *   POST /api/register  — register pelanggan & mitra
- *   POST /api/login     — login with phone + password
- *   POST /api/logout    — invalidate session
- *   GET  /api/me        — get current authenticated user
+ *   POST /api/login     — login dengan email + password
+ *   POST /api/logout    — invalidate Sanctum token
+ *   GET  /api/me        — ambil data user yang sedang login
  */
 
-import api from "@/lib/axios";
+import api, { saveToken, clearToken } from "@/lib/axios";
 import type {
   AuthResponse,
   LoginPayload,
@@ -21,83 +21,18 @@ import type {
 } from "@/types/auth";
 import axios, { AxiosError } from "axios";
 
-// ── Toggle mock mode (flip to false when backend is ready) ───────────────────
-const USE_MOCK = true;
-
-// ─── Mock Data ───────────────────────────────────────────────────────────────
-
-const MOCK_PELANGGAN: User = {
-  id: 1,
-  name: "Budi Santoso",
-  email: "budi@gmail.com",
-  phone: "081234567890",
-  role: "pelanggan",
-  province: "DI Yogyakarta",
-  city: "Sleman",
-  district: "Depok",
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-};
-
-const MOCK_MITRA: User = {
-  id: 2,
-  name: "Sari Wulandari",
-  email: "sari@gmail.com",
-  phone: "085678901234",
-  role: "mitra",
-  mitra_status: "pending",
-  nik: "3404012505980001",
-  skills_description: "Bisa bersih-bersih rumah, antar-jemput anak, belanja kebutuhan harian.",
-  province: "DI Yogyakarta",
-  city: "Bantul",
-  district: "Sewon",
-  bank_name: "BCA",
-  bank_account_number: "1234567890",
-  bank_account_name: "Sari Wulandari",
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-};
-
-const MOCK_ADMIN: User = {
-  id: 3,
-  name: "Admin Tuloong",
-  email: "admin@tuloong.id",
-  phone: "081100000000",
-  role: "admin",
-  province: "-",
-  city: "-",
-  district: "-",
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-};
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-// ─── CSRF Handshake (Sanctum) ─────────────────────────────────────────────────
-
-async function getCsrfCookie(): Promise<void> {
-  if (USE_MOCK) return;
-  await api.get("/sanctum/csrf-cookie");
-}
-
 // ─── Register Pelanggan ───────────────────────────────────────────────────────
 
 export async function registerPelanggan(
   payload: RegisterPelangganPayload
 ): Promise<AuthResponse> {
-  if (USE_MOCK) {
-    await delay(1200);
-    return {
-      message: "Akun berhasil dibuat. Selamat datang di Tuloong!",
-      user: { ...MOCK_PELANGGAN, name: payload.name, email: payload.email, phone: payload.phone },
-    };
+  const { data } = await api.post<AuthResponse>("/api/register", payload);
+
+  // Simpan token agar langsung bisa akses endpoint authenticated
+  if (data.data?.token) {
+    saveToken(data.data.token);
   }
 
-  await getCsrfCookie();
-  const { data } = await api.post<AuthResponse>("/api/register", {
-    ...payload,
-    role: "pelanggan",
-  });
   return data;
 }
 
@@ -106,73 +41,58 @@ export async function registerPelanggan(
 export async function registerMitra(
   payload: RegisterMitraPayload
 ): Promise<AuthResponse> {
-  if (USE_MOCK) {
-    await delay(1500);
-    return {
-      message: "Pendaftaran mitra berhasil. Akun sedang menunggu verifikasi admin.",
-      user: {
-        ...MOCK_MITRA,
-        name: payload.name,
-        email: payload.email,
-        phone: payload.phone,
-        mitra_status: "pending",
-      },
-    };
-  }
-
-  await getCsrfCookie();
-
-  // Mitra uses multipart/form-data for KTP photo upload
+  // Mitra pakai multipart/form-data karena ada upload foto KTP
   const formData = new FormData();
-  Object.entries(payload).forEach(([key, value]) => {
+  (Object.keys(payload) as Array<keyof RegisterMitraPayload>).forEach((key) => {
+    const value = payload[key];
     if (value !== undefined && value !== null) {
       formData.append(key, value as string | Blob);
     }
   });
-  formData.append("role", "mitra");
 
   const { data } = await api.post<AuthResponse>("/api/register", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+
+  // Simpan token jika ada
+  if (data.data?.token) {
+    saveToken(data.data.token);
+  }
+
   return data;
 }
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
-  if (USE_MOCK) {
-    await delay(1000);
-    // Simulate role detection by phone prefix
-    let user = MOCK_PELANGGAN;
-    if (payload.phone.startsWith("0856")) user = MOCK_MITRA;
-    if (payload.phone.startsWith("0811")) user = MOCK_ADMIN;
-    return { message: "Login berhasil.", user };
+  const { data } = await api.post<AuthResponse>("/api/login", payload);
+
+  // Simpan Sanctum token ke localStorage
+  if (data.data?.token) {
+    saveToken(data.data.token);
   }
 
-  await getCsrfCookie();
-  const { data } = await api.post<AuthResponse>("/api/login", payload);
   return data;
 }
 
 // ─── Logout ───────────────────────────────────────────────────────────────────
 
 export async function logout(): Promise<void> {
-  if (USE_MOCK) {
-    await delay(500);
-    return;
+  try {
+    await api.post("/api/logout");
+  } finally {
+    // Selalu hapus token lokal meski request gagal
+    clearToken();
   }
-  await api.post("/api/logout");
 }
 
 // ─── Get Current User ─────────────────────────────────────────────────────────
 
 export async function getMe(): Promise<User> {
-  if (USE_MOCK) {
-    await delay(600);
-    return MOCK_PELANGGAN;
-  }
-  const { data } = await api.get<User>("/api/me");
-  return data;
+  const { data } = await api.get<{ success: boolean; message: string; data: User }>(
+    "/api/me"
+  );
+  return data.data;
 }
 
 // ─── Error Helper ─────────────────────────────────────────────────────────────
@@ -183,6 +103,7 @@ export function parseApiError(error: unknown): {
 } {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<{
+      success: false;
       message: string;
       errors?: Record<string, string[]>;
     }>;

@@ -17,10 +17,10 @@ import { login, parseApiError } from "@/lib/services/auth.service";
 // ─── Schema ──────────────────────────────────────────────────────────────────
 
 const loginSchema = z.object({
-  phone: z
+  email: z
     .string()
-    .min(1, "Nomor telepon wajib diisi")
-    .regex(/^08[0-9]{8,11}$/, "Format nomor telepon tidak valid (contoh: 081234567890)"),
+    .min(1, "Email wajib diisi")
+    .email("Format email tidak valid"),
   password: z
     .string()
     .min(8, "Kata sandi minimal 8 karakter"),
@@ -46,13 +46,13 @@ export default function LoginPage() {
     setServerError(null);
     try {
       const res = await login(data);
-      // Redirect based on role
+      // Redirect berdasarkan role user
       const redirectMap: Record<string, string> = {
         pelanggan: "/dashboard",
         mitra: "/mitra/dashboard",
         admin: "/admin/dashboard",
       };
-      router.push(redirectMap[res.user.role] ?? "/");
+      router.push(redirectMap[res.data.user.role] ?? "/");
     } catch (err) {
       const { message } = parseApiError(err);
       setServerError(message);
@@ -112,11 +112,11 @@ export default function LoginPage() {
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
               <FormInput
-                label="Nomor Telepon"
-                type="tel"
-                placeholder="08xxxxxxxxxx"
-                error={errors.phone?.message}
-                {...register("phone")}
+                label="Email"
+                type="email"
+                placeholder="contoh: budi@gmail.com"
+                error={errors.email?.message}
+                {...register("email")}
               />
 
               <PasswordInput

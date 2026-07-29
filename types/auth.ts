@@ -1,35 +1,38 @@
 // ─── Auth Payload Types ─────────────────────────────────────────────────────
+// Fields menggunakan nama BE (Indonesia) agar langsung dikirim ke API
 
 export interface RegisterPelangganPayload {
-  name: string;
+  nama: string;
   email: string;
-  phone: string;
+  nomor_telepon: string;
   password: string;
   password_confirmation: string;
-  province: string;
-  city: string;
-  district: string;
+  provinsi: string;
+  kabupaten: string;
+  kecamatan: string;
+  role: "pelanggan";
 }
 
 export interface RegisterMitraPayload {
-  name: string;
+  nama: string;
   email: string;
-  phone: string;
+  nomor_telepon: string;
   password: string;
   password_confirmation: string;
-  nik: string;
-  ktp_photo: File;
-  skills_description: string;
-  province: string;
-  city: string;
-  district: string;
-  bank_name: string;
-  bank_account_number: string;
-  bank_account_name: string;
+  nomor_ktp: string;
+  foto_ktp: File;
+  deskripsi_keahlian: string;
+  provinsi: string;
+  kabupaten: string;
+  kecamatan: string;
+  nama_bank: string;
+  nomor_rekening: string;
+  nama_pemilik_rekening: string;
+  role: "mitra";
 }
 
 export interface LoginPayload {
-  phone: string;
+  email: string;
   password: string;
 }
 
@@ -37,37 +40,62 @@ export interface LoginPayload {
 
 export type UserRole = "pelanggan" | "mitra" | "admin";
 
-export type MitraStatus = "pending" | "active" | "rejected";
+export type MitraVerificationStatus = "pending" | "aktif" | "ditolak" | "pending_update";
+
+export type MitraBadge = "baru" | "terpercaya" | "profesional";
+
+export type UserStatus = "aktif" | "nonaktif";
+
+// ─── User dari response BE ────────────────────────────────────────────────────
+// Field naming mengikuti BE (Laravel — Bahasa Indonesia)
+
+export interface MitraProfile {
+  verification_status: MitraVerificationStatus;
+  badge: MitraBadge;
+  deskripsi_keahlian: string;
+  provinsi: string;
+  kabupaten: string;
+  kecamatan: string;
+  total_job_selesai: number;
+  rating_rata: number | null;
+}
+
+export interface PelangganProfile {
+  provinsi: string;
+  kabupaten: string;
+  kecamatan: string;
+}
 
 export interface User {
   id: number;
-  name: string;
+  nama: string;
   email: string;
-  phone: string;
   role: UserRole;
-  province: string;
-  city: string;
-  district: string;
-  avatar_url?: string;
-  // Mitra-specific
-  mitra_status?: MitraStatus;
-  nik?: string;
-  ktp_photo_url?: string;
-  skills_description?: string;
-  bank_name?: string;
-  bank_account_number?: string;
-  bank_account_name?: string;
+  nomor_telepon: string;
+  foto_profil: string | null;
+  status: UserStatus;
   created_at: string;
-  updated_at: string;
+  // Relasi (opsional, hanya ada jika di-load)
+  mitra_profile?: MitraProfile;
+  pelanggan_profile?: PelangganProfile;
+}
+
+// ─── BE API Response Wrapper ─────────────────────────────────────────────────
+// Semua response BE punya format: { success, message, data }
+
+export interface BEAuthData {
+  user: User;
+  token: string;
 }
 
 export interface AuthResponse {
+  success: boolean;
   message: string;
-  user: User;
-  token?: string; // Only on login; for Sanctum cookie-based, may be omitted
+  data: BEAuthData;
 }
 
 export interface ApiError {
+  success: false;
   message: string;
   errors?: Record<string, string[]>;
 }

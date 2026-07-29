@@ -21,31 +21,32 @@ import { registerMitra, parseApiError } from "@/lib/services/auth.service";
 import { PROVINSI_LIST, getKabupatenList, getKecamatanList, BANK_LIST } from "@/lib/data/wilayah";
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
+// Field names match BE (Laravel) naming convention
 
 const schema = z
   .object({
-    name: z.string().min(3, "Nama minimal 3 karakter"),
+    nama: z.string().min(3, "Nama minimal 3 karakter"),
     email: z.string().email("Format email tidak valid"),
-    phone: z
+    nomor_telepon: z
       .string()
       .min(1, "Nomor telepon wajib diisi")
       .regex(/^08[0-9]{8,11}$/, "Format: 08xxxxxxxxxx (10–13 digit)"),
-    nik: z
+    nomor_ktp: z
       .string()
       .length(16, "NIK harus 16 digit")
       .regex(/^[0-9]+$/, "NIK hanya boleh angka"),
     password: z.string().min(8, "Kata sandi minimal 8 karakter"),
     password_confirmation: z.string().min(1, "Konfirmasi kata sandi wajib diisi"),
-    skills_description: z.string().min(20, "Deskripsi keahlian minimal 20 karakter"),
-    province: z.string().min(1, "Pilih provinsi"),
-    city: z.string().min(1, "Pilih kabupaten/kota"),
-    district: z.string().min(1, "Pilih kecamatan"),
-    bank_name: z.string().min(1, "Pilih nama bank"),
-    bank_account_number: z
+    deskripsi_keahlian: z.string().min(20, "Deskripsi keahlian minimal 20 karakter"),
+    provinsi: z.string().min(1, "Pilih provinsi"),
+    kabupaten: z.string().min(1, "Pilih kabupaten/kota"),
+    kecamatan: z.string().min(1, "Pilih kecamatan"),
+    nama_bank: z.string().min(1, "Pilih nama bank"),
+    nomor_rekening: z
       .string()
       .min(6, "Nomor rekening minimal 6 digit")
       .regex(/^[0-9]+$/, "Nomor rekening hanya angka"),
-    bank_account_name: z.string().min(3, "Nama pemilik rekening minimal 3 karakter"),
+    nama_pemilik_rekening: z.string().min(3, "Nama pemilik rekening minimal 3 karakter"),
     agree: z.literal(true, { message: "Kamu harus menyetujui syarat & ketentuan" }),
   })
   .refine((d) => d.password === d.password_confirmation, {
@@ -73,19 +74,19 @@ export default function RegisterMitraPage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      province: "",
-      city: "",
-      district: "",
-      bank_name: "",
+      provinsi: "",
+      kabupaten: "",
+      kecamatan: "",
+      nama_bank: "",
     },
   });
 
-  const province = watch("province");
-  const city = watch("city");
+  const provinsi = watch("provinsi");
+  const kabupaten = watch("kabupaten");
   const agreeValue = watch("agree");
 
-  const kabupatenList = getKabupatenList(province);
-  const kecamatanList = getKecamatanList(province, city);
+  const kabupatenList = getKabupatenList(provinsi);
+  const kecamatanList = getKecamatanList(provinsi, kabupaten);
 
   const onSubmit = async (data: FormData) => {
     setServerError(null);
@@ -99,20 +100,21 @@ export default function RegisterMitraPage() {
 
     try {
       await registerMitra({
-        name: data.name,
+        nama: data.nama,
         email: data.email,
-        phone: data.phone,
+        nomor_telepon: data.nomor_telepon,
         password: data.password,
         password_confirmation: data.password_confirmation,
-        nik: data.nik,
-        ktp_photo: ktpFile,
-        skills_description: data.skills_description,
-        province: data.province,
-        city: data.city,
-        district: data.district,
-        bank_name: data.bank_name,
-        bank_account_number: data.bank_account_number,
-        bank_account_name: data.bank_account_name,
+        nomor_ktp: data.nomor_ktp,
+        foto_ktp: ktpFile,
+        deskripsi_keahlian: data.deskripsi_keahlian,
+        provinsi: data.provinsi,
+        kabupaten: data.kabupaten,
+        kecamatan: data.kecamatan,
+        nama_bank: data.nama_bank,
+        nomor_rekening: data.nomor_rekening,
+        nama_pemilik_rekening: data.nama_pemilik_rekening,
+        role: "mitra",
       });
       router.push("/register/mitra/pending");
     } catch (err) {
@@ -194,8 +196,8 @@ export default function RegisterMitraPage() {
                 <FormInput
                   label="Nama lengkap"
                   placeholder="Sesuai KTP"
-                  error={errors.name?.message ?? fieldErrors.name}
-                  {...register("name")}
+                  error={errors.nama?.message ?? fieldErrors.nama}
+                  {...register("nama")}
                 />
 
                 <FormInput
@@ -211,15 +213,15 @@ export default function RegisterMitraPage() {
                     label="Nomor Telepon"
                     type="tel"
                     placeholder="08xxxxxxxxxx"
-                    error={errors.phone?.message ?? fieldErrors.phone}
-                    {...register("phone")}
+                    error={errors.nomor_telepon?.message ?? fieldErrors.nomor_telepon}
+                    {...register("nomor_telepon")}
                   />
                   <FormInput
                     label="No KTP"
                     placeholder="16 Digit NIK"
                     maxLength={16}
-                    error={errors.nik?.message ?? fieldErrors.nik}
-                    {...register("nik")}
+                    error={errors.nomor_ktp?.message ?? fieldErrors.nomor_ktp}
+                    {...register("nomor_ktp")}
                   />
                 </div>
 
@@ -276,34 +278,34 @@ export default function RegisterMitraPage() {
                     label="Provinsi"
                     placeholder="Pilih Provinsi"
                     options={PROVINSI_LIST}
-                    value={province}
+                    value={provinsi}
                     onChange={(v) => {
-                      setValue("province", v, { shouldValidate: true });
-                      setValue("city", "");
-                      setValue("district", "");
+                      setValue("provinsi", v, { shouldValidate: true });
+                      setValue("kabupaten", "");
+                      setValue("kecamatan", "");
                     }}
-                    error={errors.province?.message ?? fieldErrors.province}
+                    error={errors.provinsi?.message ?? fieldErrors.provinsi}
                   />
                   <FormSelect
                     label="Kabupaten"
                     placeholder="Pilih Kabupaten"
                     options={kabupatenList}
-                    value={city}
+                    value={kabupaten}
                     onChange={(v) => {
-                      setValue("city", v, { shouldValidate: true });
-                      setValue("district", "");
+                      setValue("kabupaten", v, { shouldValidate: true });
+                      setValue("kecamatan", "");
                     }}
-                    error={errors.city?.message ?? fieldErrors.city}
-                    disabled={!province}
+                    error={errors.kabupaten?.message ?? fieldErrors.kabupaten}
+                    disabled={!provinsi}
                   />
                   <FormSelect
                     label="Kecamatan"
                     placeholder="Pilih Kecamatan"
                     options={kecamatanList}
-                    value={watch("district")}
-                    onChange={(v) => setValue("district", v, { shouldValidate: true })}
-                    error={errors.district?.message ?? fieldErrors.district}
-                    disabled={!city}
+                    value={watch("kecamatan")}
+                    onChange={(v) => setValue("kecamatan", v, { shouldValidate: true })}
+                    error={errors.kecamatan?.message ?? fieldErrors.kecamatan}
+                    disabled={!kabupaten}
                   />
                 </div>
               </section>
@@ -323,8 +325,8 @@ export default function RegisterMitraPage() {
                   placeholder="Contoh: bisa perbaikan ringan rumah tangga, antar-jemput barang, bersih-bersih..."
                   wrapperClassName="flex-grow flex flex-col justify-between"
                   className="flex-grow h-full min-h-[146px]"
-                  error={errors.skills_description?.message ?? fieldErrors.skills_description}
-                  {...register("skills_description")}
+                  error={errors.deskripsi_keahlian?.message ?? fieldErrors.deskripsi_keahlian}
+                  {...register("deskripsi_keahlian")}
                 />
               </section>
             </div>
@@ -338,21 +340,21 @@ export default function RegisterMitraPage() {
                   label="Nama Bank"
                   placeholder="Pilih Bank"
                   options={BANK_LIST}
-                  value={watch("bank_name")}
-                  onChange={(v) => setValue("bank_name", v, { shouldValidate: true })}
-                  error={errors.bank_name?.message ?? fieldErrors.bank_name}
+                  value={watch("nama_bank")}
+                  onChange={(v) => setValue("nama_bank", v, { shouldValidate: true })}
+                  error={errors.nama_bank?.message ?? fieldErrors.nama_bank}
                 />
                 <FormInput
                   label="Nomor Rekening"
                   placeholder="Nomor Rekening"
-                  error={errors.bank_account_number?.message ?? fieldErrors.bank_account_number}
-                  {...register("bank_account_number")}
+                  error={errors.nomor_rekening?.message ?? fieldErrors.nomor_rekening}
+                  {...register("nomor_rekening")}
                 />
                 <FormInput
                   label="Nama Pemilik Rekening"
                   placeholder="Nama sesuai buku tabungan"
-                  error={errors.bank_account_name?.message ?? fieldErrors.bank_account_name}
-                  {...register("bank_account_name")}
+                  error={errors.nama_pemilik_rekening?.message ?? fieldErrors.nama_pemilik_rekening}
+                  {...register("nama_pemilik_rekening")}
                 />
               </div>
 
