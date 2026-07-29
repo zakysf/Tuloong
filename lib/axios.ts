@@ -26,7 +26,7 @@ export function clearToken(): void {
 // ── Axios instance ────────────────────────────────────────────────────────────
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000",
+  baseURL: "", // Requests go to Next.js dev server, which proxies /api/* to Laravel via rewrites in next.config.ts
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

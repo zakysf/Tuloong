@@ -39,6 +39,11 @@ export async function getProfile(): Promise<User> {
   return data.data;
 }
 
+export async function getPublicMitraProfile(id: number): Promise<User> {
+  const { data } = await api.get<BEResponse<User>>(`/api/mitra/${id}/profile`);
+  return data.data;
+}
+
 // ─── Update Profile ───────────────────────────────────────────────────────────
 
 export async function updateProfile(

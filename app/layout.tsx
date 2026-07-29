@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -35,7 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${poppins.variable} ${inter.variable}`}>
-      <body className="min-h-dvh antialiased overflow-y-scroll">{children}</body>
+      <body className="min-h-dvh antialiased overflow-y-scroll">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

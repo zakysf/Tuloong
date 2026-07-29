@@ -20,9 +20,10 @@ export interface Post {
   created_at: string;
   updated_at: string;
   // Relasi (opsional)
-  user?: { id: number; nama: string; kecamatan: string };
+  user?: { id: number; nama: string; kecamatan: string; foto_profil?: string | null };
   claim?: Claim;
   transaction?: Transaction;
+  review?: Review;
 }
 
 export interface CreatePostPayload {
