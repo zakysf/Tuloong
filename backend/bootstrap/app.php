@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'mitra.active' => \App\Http\Middleware\EnsureMitraActive::class,
         ]);
 
-        $middleware->statefulApi();
+        // $middleware->statefulApi(); // Removed to avoid CSRF mismatch because we use Bearer tokens
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Format JSON response untuk ModelNotFoundException (404)

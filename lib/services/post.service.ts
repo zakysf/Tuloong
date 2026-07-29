@@ -30,8 +30,9 @@ export async function getPosts(filters?: PostFilters): Promise<Post[]> {
   if (filters?.kabupaten) params.set("kabupaten", filters.kabupaten);
   if (filters?.urgensi) params.set("urgensi", filters.urgensi);
 
-  const { data } = await api.get<BEListResponse<Post>>("/api/posts", { params });
-  return data.data;
+  const { data } = await api.get<any>("/api/posts", { params });
+  // Laravel paginator wraps array in data.data
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }
 
 // ─── Get Post Detail ──────────────────────────────────────────────────────────
@@ -67,8 +68,9 @@ export async function deletePost(id: number): Promise<void> {
 // ─── My Posts (Pelanggan) ─────────────────────────────────────────────────────
 
 export async function getMyPosts(): Promise<Post[]> {
-  const { data } = await api.get<BEListResponse<Post>>("/api/pelanggan/posts");
-  return data.data;
+  const { data } = await api.get<any>("/api/pelanggan/posts");
+  // Laravel paginator wraps array in data.data
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }
 
 // ─── Error Helper ─────────────────────────────────────────────────────────────

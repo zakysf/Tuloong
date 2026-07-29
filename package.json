@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:backend": "cd backend && php artisan serve",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev\"",
     "build": "next build",
     "start": "next start"
   },
@@ -28,6 +30,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^10.0.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

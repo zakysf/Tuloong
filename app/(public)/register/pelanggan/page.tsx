@@ -87,7 +87,7 @@ export default function RegisterPelangganPage() {
         kecamatan: data.kecamatan,
         role: "pelanggan",
       });
-      router.push("/dashboard");
+      router.push("/pelanggan");
     } catch (err) {
       const { message, fieldErrors: fe } = parseApiError(err);
       setServerError(message);

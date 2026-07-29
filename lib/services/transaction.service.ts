@@ -32,17 +32,17 @@ export async function createTransaction(
 // ─── Get Pelanggan Transactions ───────────────────────────────────────────────
 
 export async function getMyTransactions(): Promise<Transaction[]> {
-  const { data } = await api.get<BEListResponse<Transaction>>(
+  const { data } = await api.get<any>(
     "/api/pelanggan/transactions"
   );
-  return data.data;
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }
 
 // ─── Get Mitra Transactions ───────────────────────────────────────────────────
 
 export async function getMitraTransactions(): Promise<Transaction[]> {
-  const { data } = await api.get<BEListResponse<Transaction>>(
+  const { data } = await api.get<any>(
     "/api/mitra/transactions"
   );
-  return data.data;
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }

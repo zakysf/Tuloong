@@ -48,9 +48,9 @@ export default function LoginPage() {
       const res = await login(data);
       // Redirect berdasarkan role user
       const redirectMap: Record<string, string> = {
-        pelanggan: "/dashboard",
-        mitra: "/mitra/dashboard",
-        admin: "/admin/dashboard",
+        pelanggan: "/pelanggan",
+        mitra: "/mitra",
+        admin: "/admin",
       };
       router.push(redirectMap[res.data.user.role] ?? "/");
     } catch (err) {
