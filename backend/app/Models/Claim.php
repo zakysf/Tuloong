@@ -15,6 +15,7 @@ class Claim extends Model
         'mitra_id',
         'status',
         'claimed_at',
+        'foto_bukti',
     ];
 
     protected function casts(): array

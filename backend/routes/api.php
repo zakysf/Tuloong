@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Shared\ProfileController;
 use App\Http\Controllers\Admin\MitraVerificationController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\WebhookController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes — Dev Backend 1 (User, Auth, Admin)
+| API Routes â€” Dev Backend 1 (User, Auth, Admin)
 |           + Dev Backend 2 (Post, Claim, Transaksi, Chat, Review, Report)
 |--------------------------------------------------------------------------
 */
@@ -30,6 +31,10 @@ use App\Http\Controllers\WebhookController;
 // =====================================================
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Password Reset Routes
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 
 // Daftar postingan open (publik)
 Route::get('/posts', [PostController::class, 'index']);
@@ -75,7 +80,7 @@ Route::get('/settings/public', function () {
     ]);
 });
 
-// Webhook Midtrans (tanpa Sanctum — dipanggil oleh Midtrans server)
+// Webhook Midtrans (tanpa Sanctum â€” dipanggil oleh Midtrans server)
 Route::post('/webhook/midtrans', [WebhookController::class, 'handle']);
 
 // =====================================================
@@ -168,3 +173,14 @@ Route::get('/email/verify/{id}/{hash}', function ($id, $hash, Illuminate\Http\Re
     }
     return redirect('http://localhost:3000/login?verified=1');
 })->middleware(['signed'])->name('verification.verify');
+
+if (app()->environment('local')) {
+    Route::post('/dev/transactions/{id}/force-paid', function ($id) {
+        $transaction = \App\Models\Transaction::findOrFail($id);
+        $transaction->update(['status' => 'paid']);
+        return response()->json(['success' => true]);
+    });
+}
+
+
+

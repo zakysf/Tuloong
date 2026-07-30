@@ -16,13 +16,13 @@ export default function AuthSidebar({ variant = "pelanggan" }: AuthSidebarProps)
   return (
     <div
       className="relative hidden md:flex flex-col justify-between p-8 overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #1A5C48 0%, #2D7A5F 60%, #4A9B7F 100%)" }}
+      style={{ backgroundColor: "#2e745c" }} // A bit lighter green based on image
     >
       {/* Logo */}
       <div>
         <div className="flex items-center gap-2 mb-10">
           {/* Hand icon */}
-          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/>
               <path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/>

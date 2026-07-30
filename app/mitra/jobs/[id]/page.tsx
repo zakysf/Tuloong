@@ -6,7 +6,7 @@ import { getPost } from "@/lib/services/post.service";
 import { claimJob } from "@/lib/services/claim.service";
 import type { Post } from "@/types/post";
 import Link from "next/link";
-import { ArrowLeft, MapPin, Clock, Wallet, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Wallet, CheckCircle, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/providers/AuthProvider";
 
@@ -34,15 +34,17 @@ export default function DetailJobMitraPage() {
     fetchPost();
   }, [id]);
 
-  const handleClaim = async () => {
-    // Basic frontend check if mitra is verified
+  const [showClaimConfirm, setShowClaimConfirm] = useState(false);
+
+  const handleClaimClick = () => {
     if (user?.mitra_profile?.verification_status !== "aktif") {
       setError("Akun Anda belum diverifikasi aktif oleh Admin. Anda tidak dapat mengklaim pekerjaan.");
       return;
     }
+    setShowClaimConfirm(true);
+  };
 
-    if (!confirm("Apakah Anda yakin sanggup mengerjakan pekerjaan ini sesuai budget dan estimasi waktu?")) return;
-
+  const confirmClaim = async () => {
     setClaiming(true);
     setError("");
     
@@ -52,6 +54,7 @@ export default function DetailJobMitraPage() {
     } catch (err: any) {
       setError(err.response?.data?.message || "Gagal mengklaim pekerjaan. Mungkin sudah diambil mitra lain.");
       setClaiming(false);
+      setShowClaimConfirm(false);
     }
   };
 
@@ -156,7 +159,7 @@ export default function DetailJobMitraPage() {
 
             {post.status === "open" ? (
               <Button 
-                onClick={handleClaim}
+                onClick={handleClaimClick}
                 disabled={claiming}
                 className="w-full h-12 text-base font-semibold bg-teal-700 hover:bg-teal-800"
               >
@@ -175,6 +178,37 @@ export default function DetailJobMitraPage() {
           </div>
         </div>
       </div>
+
+      {showClaimConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-xl text-center space-y-4 animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 mb-2">
+              <Info size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Klaim Pekerjaan?</h3>
+            <p className="text-gray-500 text-sm">
+              Apakah Anda yakin sanggup mengerjakan pekerjaan ini sesuai budget dan estimasi waktu yang diminta?
+            </p>
+            <div className="flex gap-3 mt-6">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setShowClaimConfirm(false)}
+                disabled={claiming}
+              >
+                Batal
+              </Button>
+              <Button 
+                className="flex-1 bg-teal-700 hover:bg-teal-800"
+                disabled={claiming}
+                onClick={confirmClaim}
+              >
+                {claiming ? "Memproses..." : "Ya, Sanggup"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

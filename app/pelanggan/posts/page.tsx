@@ -5,7 +5,7 @@ import { getMyPosts, deletePost } from "@/lib/services/post.service";
 import type { Post } from "@/types/post";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Search, Trash2, Edit } from "lucide-react";
+import { PlusCircle, Search, Trash2, Edit, AlertTriangle } from "lucide-react";
 
 export default function PostinganSayaPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -28,14 +28,20 @@ export default function PostinganSayaPage() {
     }
   }
 
-  const handleDelete = async (id: number) => {
-    if (confirm("Apakah Anda yakin ingin menghapus postingan ini?")) {
-      try {
-        await deletePost(id);
-        fetchPosts();
-      } catch (error) {
-        alert("Gagal menghapus postingan. Pastikan statusnya masih open.");
-      }
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
+    try {
+      await deletePost(deleteId);
+      await fetchPosts();
+      setDeleteId(null);
+    } catch (error) {
+      alert("Gagal menghapus postingan. Pastikan statusnya masih open.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -120,7 +126,7 @@ export default function PostinganSayaPage() {
                       variant="ghost" 
                       size="icon" 
                       className="text-red-500 hover:bg-red-50 hover:text-red-600"
-                      onClick={() => handleDelete(post.id)}
+                      onClick={() => setDeleteId(post.id)}
                       title="Hapus Postingan"
                     >
                       <Trash2 size={18} />
@@ -132,6 +138,37 @@ export default function PostinganSayaPage() {
           </div>
         )}
       </div>
+
+      {deleteId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-xl text-center space-y-4 animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 mb-2">
+              <AlertTriangle size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Hapus Postingan?</h3>
+            <p className="text-gray-500 text-sm">
+              Apakah Anda yakin ingin menghapus postingan ini? Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <div className="flex gap-3 mt-6">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setDeleteId(null)}
+                disabled={isDeleting}
+              >
+                Batal
+              </Button>
+              <Button 
+                className="flex-1 bg-red-600 hover:bg-red-700"
+                disabled={isDeleting}
+                onClick={confirmDelete}
+              >
+                {isDeleting ? "Menghapus..." : "Ya, Hapus"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

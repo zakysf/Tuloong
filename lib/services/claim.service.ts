@@ -27,18 +27,36 @@ export async function claimJob(
 
 export async function updateClaimStatus(
   claimId: number,
-  status: ClaimStatus
+  status: ClaimStatus,
+  fotoBukti?: File
 ): Promise<Claim> {
-  const { data } = await api.patch<BEResponse<Claim>>(
-    `/api/claims/${claimId}/status`,
-    { status }
-  );
-  return data.data;
+  if (fotoBukti) {
+    const formData = new FormData();
+    formData.append("status", status);
+    formData.append("foto_bukti", fotoBukti);
+    formData.append("_method", "PATCH");
+
+    const { data } = await api.post<BEResponse<Claim>>(
+      `/api/claims/${claimId}/status`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    return data.data;
+  } else {
+    const { data } = await api.patch<BEResponse<Claim>>(
+      `/api/claims/${claimId}/status`,
+      { status }
+    );
+    return data.data;
+  }
 }
 
 // ─── My Jobs (Mitra) ─────────────────────────────────────────────────────────
 
 export async function getMyJobs(): Promise<Claim[]> {
-  const { data } = await api.get<BEListResponse<Claim>>("/api/mitra/jobs");
-  return data.data;
+  const { data } = await api.get<any>("/api/mitra/jobs");
+  // Laravel paginator wraps array in data.data
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }

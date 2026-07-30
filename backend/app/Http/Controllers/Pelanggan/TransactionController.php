@@ -86,7 +86,12 @@ class TransactionController extends Controller
         });
 
         try {
-            $snapToken = $this->midtransService->createSnapToken($transaction);
+            if (empty(config('midtrans.server_key'))) {
+                $snapToken = 'dummy-snap-token';
+                $transaction->update(['midtrans_order_id' => 'DUMMY-' . $transaction->id]);
+            } else {
+                $snapToken = $this->midtransService->createSnapToken($transaction);
+            }
         } catch (\Exception $e) {
             // Jika Midtrans gagal, kembalikan transaksi tanpa snap_token
             return response()->json([

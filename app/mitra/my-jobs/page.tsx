@@ -3,13 +3,17 @@
 import { useEffect, useState } from "react";
 import { getMyJobs, updateClaimStatus } from "@/lib/services/claim.service";
 import Link from "next/link";
-import { Briefcase, ArrowRight, Loader2, MessageCircle } from "lucide-react";
+import { Briefcase, ArrowRight, Loader2, MessageCircle, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function JobSayaPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  
+  // Upload Bukti State
+  const [uploadClaimId, setUploadClaimId] = useState<number | null>(null);
+  const [fotoBukti, setFotoBukti] = useState<File | null>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -31,6 +35,26 @@ export default function JobSayaPage() {
     try {
       await updateClaimStatus(claimId, nextStatus as any);
       await fetchJobs(); // refresh list
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Gagal memperbarui status.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleSubmitSelesai = async () => {
+    if (!uploadClaimId) return;
+    if (!fotoBukti) {
+      alert("Harap unggah foto bukti pekerjaan terlebih dahulu.");
+      return;
+    }
+    
+    setUpdatingId(uploadClaimId);
+    try {
+      await updateClaimStatus(uploadClaimId, 'done_by_mitra', fotoBukti);
+      await fetchJobs();
+      setUploadClaimId(null);
+      setFotoBukti(null);
     } catch (error: any) {
       alert(error.response?.data?.message || "Gagal memperbarui status.");
     } finally {
@@ -133,7 +157,7 @@ export default function JobSayaPage() {
 
                     {claim.status === 'working' && (
                       <Button 
-                        onClick={() => handleUpdateStatus(claim.id, 'done_by_mitra')}
+                        onClick={() => setUploadClaimId(claim.id)}
                         disabled={updatingId === claim.id}
                         className="w-full bg-green-600 hover:bg-green-700"
                       >
@@ -156,6 +180,80 @@ export default function JobSayaPage() {
           </div>
         )}
       </div>
+
+      {/* Upload Bukti Modal */}
+      {uploadClaimId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <h3 className="font-bold text-gray-900 text-lg">Unggah Bukti Pekerjaan</h3>
+              <button 
+                onClick={() => { setUploadClaimId(null); setFotoBukti(null); }}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              <p className="text-sm text-gray-500 text-center">
+                Silakan unggah foto hasil pekerjaan Anda sebagai bukti bahwa pekerjaan telah selesai. Foto ini akan dilihat oleh pelanggan.
+              </p>
+
+              <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer relative">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setFotoBukti(e.target.files[0]);
+                    }
+                  }}
+                />
+                
+                {fotoBukti ? (
+                  <div className="text-center space-y-3 w-full">
+                    <div className="w-24 h-24 rounded-lg overflow-hidden mx-auto border border-gray-200 bg-white shadow-sm p-1">
+                       <img src={URL.createObjectURL(fotoBukti)} alt="Preview" className="w-full h-full object-cover rounded" />
+                    </div>
+                    <div className="text-sm font-medium text-teal-700 truncate px-4">{fotoBukti.name}</div>
+                    <div className="text-xs text-gray-500">Klik untuk mengganti gambar</div>
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-400 space-y-2 pointer-events-none">
+                    <Upload size={32} className="mx-auto text-gray-300" />
+                    <p className="font-medium text-gray-600 text-sm">Pilih gambar atau tarik ke sini</p>
+                    <p className="text-xs">JPG, PNG, GIF (Maks. 5MB)</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => { setUploadClaimId(null); setFotoBukti(null); }}
+                  disabled={updatingId !== null}
+                >
+                  Batal
+                </Button>
+                <Button 
+                  type="button" 
+                  className="flex-1 bg-teal-700 hover:bg-teal-800"
+                  onClick={handleSubmitSelesai}
+                  disabled={!fotoBukti || updatingId !== null}
+                >
+                  {updatingId !== null ? (
+                    <><Loader2 className="animate-spin mr-2" size={16} /> Memproses...</>
+                  ) : "Selesai"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

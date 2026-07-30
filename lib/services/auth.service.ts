@@ -95,6 +95,20 @@ export async function getMe(): Promise<User> {
   return data.data;
 }
 
+// ─── Forgot Password ──────────────────────────────────────────────────────────
+
+export async function sendPasswordResetLink(email: string): Promise<{ success: boolean; message: string }> {
+  const { data } = await api.post<{ success: boolean; message: string }>("/api/forgot-password", { email });
+  return data;
+}
+
+// ─── Reset Password ───────────────────────────────────────────────────────────
+
+export async function resetPassword(payload: { email: string; token: string; password: string; password_confirmation: string }): Promise<{ success: boolean; message: string }> {
+  const { data } = await api.post<{ success: boolean; message: string }>("/api/reset-password", payload);
+  return data;
+}
+
 // ─── Error Helper ─────────────────────────────────────────────────────────────
 
 export function parseApiError(error: unknown): {

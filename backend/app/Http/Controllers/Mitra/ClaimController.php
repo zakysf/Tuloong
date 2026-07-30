@@ -121,9 +121,25 @@ class ClaimController extends Controller
         }
 
         if ($newStatus === 'done_by_mitra') {
-            DB::transaction(function () use ($claim, $mitra, $newStatus) {
-                // Update claim status
-                $claim->update(['status' => $newStatus, 'updated_at' => now()]);
+            $fotoBuktiUrl = null;
+
+            if ($request->hasFile('foto_bukti')) {
+                $uploaded = cloudinary()->upload($request->file('foto_bukti')->getRealPath());
+                $fotoBuktiUrl = $uploaded->getSecurePath();
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Foto bukti pekerjaan wajib diunggah',
+                ], 422);
+            }
+
+            DB::transaction(function () use ($claim, $mitra, $newStatus, $fotoBuktiUrl) {
+                // Update claim status & foto_bukti
+                $claim->update([
+                    'status' => $newStatus, 
+                    'foto_bukti' => $fotoBuktiUrl,
+                    'updated_at' => now()
+                ]);
 
                 // Update transaksi → completed
                 $claim->transaction->update(['status' => 'completed']);

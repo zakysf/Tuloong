@@ -21,7 +21,7 @@ class PostController extends Controller
 
         $posts = Post::open()
             ->filter($filters)
-            ->with(['user:id,nama,kecamatan,foto_profil'])
+            ->with(['user:id,nama,foto_profil'])
             ->orderByUrgensi()
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -64,9 +64,10 @@ class PostController extends Controller
     public function show(int $id): JsonResponse
     {
         $post = Post::with([
-            'user:id,nama,kecamatan,foto_profil',
+            'user:id,nama,foto_profil',
             'claim.mitra:id,nama,foto_profil',
             'claim.mitra.mitraProfile:user_id,badge,rating_rata,total_job_selesai',
+            'transaction:id,post_id,status,amount',
         ])->findOrFail($id);
 
         return response()->json([

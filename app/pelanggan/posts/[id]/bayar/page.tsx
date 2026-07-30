@@ -63,8 +63,20 @@ export default function BayarPostinganPage() {
       const response = await createTransaction(post.claim.id);
       
       if (response.snap_token) {
+        if (response.snap_token === 'dummy-snap-token' && process.env.NODE_ENV === 'development') {
+          // Bypass popup Midtrans jika server key tidak di-set (menggunakan token dummy)
+          try {
+            const api = (await import("@/lib/axios")).default;
+            await api.post(`/api/dev/transactions/${response.transaction_id}/force-paid`);
+          } catch (e) {
+            console.error("Local dev auto-pay failed", e);
+          }
+          router.push(`/pelanggan/posts/${id}?payment=success`);
+          return;
+        }
+
         window.snap.pay(response.snap_token, {
-          onSuccess: function (result: any) {
+          onSuccess: async function (result: any) {
             router.push(`/pelanggan/posts/${id}?payment=success`);
           },
           onPending: function (result: any) {

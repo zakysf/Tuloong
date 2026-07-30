@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getPost } from "@/lib/services/post.service";
 import type { Post } from "@/types/post";
 import Link from "next/link";
-import { ArrowLeft, MapPin, Clock, Wallet, Info, MessageCircle, AlertTriangle } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Wallet, Info, MessageCircle, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ReviewForm from "@/components/shared/ReviewForm";
 import ReportModal from "@/components/shared/ReportModal";
@@ -14,6 +14,9 @@ import DonationPopup from "@/components/shared/DonationPopup";
 export default function DetailPostinganPage() {
   const { id } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paymentStatus = searchParams.get('payment');
+  
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +24,17 @@ export default function DetailPostinganPage() {
   const [showReview, setShowReview] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (paymentStatus === 'success') {
+      setShowPaymentSuccess(true);
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [paymentStatus]);
 
   useEffect(() => {
     async function fetchPost() {
@@ -57,10 +71,21 @@ export default function DetailPostinganPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <Link href="/pelanggan/posts" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900">
-        <ArrowLeft size={16} className="mr-2" />
-        Kembali ke Daftar Postingan
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/pelanggan/posts" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900">
+          <ArrowLeft size={16} className="mr-2" />
+          Kembali ke Daftar Postingan
+        </Link>
+        {post.status === "open" && (
+          <Button 
+            variant="outline" 
+            className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            Hapus Postingan
+          </Button>
+        )}
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Kolom Utama */}
@@ -146,6 +171,23 @@ export default function DetailPostinganPage() {
               </div>
             </div>
           )}
+
+          {/* Bukti Pekerjaan */}
+          {post.claim?.foto_bukti && (
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-teal-700">
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                  <circle cx="9" cy="9" r="2"/>
+                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                </svg>
+                Bukti Pekerjaan Selesai
+              </h3>
+              <div className="rounded-xl overflow-hidden border border-gray-200">
+                <img src={post.claim.foto_bukti} alt="Bukti Pekerjaan" className="w-full h-auto object-cover" />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Kolom Sidebar Kanan */}
@@ -166,7 +208,7 @@ export default function DetailPostinganPage() {
                   Menunggu Mitra mengklaim pekerjaan ini. Setelah diklaim, Anda dapat melakukan pembayaran.
                 </p>
               </div>
-            ) : post.transaction?.status === 'pending' ? (
+            ) : !post.transaction || post.transaction.status === 'pending' ? (
               <div className="mt-6 space-y-3">
                 <p className="text-sm font-medium text-red-600 mb-2">Menunggu Pembayaran</p>
                 <Link href={`/pelanggan/posts/${post.id}/bayar`} className="block">
@@ -255,6 +297,68 @@ export default function DetailPostinganPage() {
           reportedName={post.claim?.mitra?.nama || "Mitra"}
           onClose={() => setShowReport(false)}
         />
+      )}
+
+      {showPaymentSuccess && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-xl text-center space-y-4 animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600 mb-2">
+              <CheckCircle2 size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Pembayaran Berhasil!</h3>
+            <p className="text-gray-500 text-sm">
+              Transaksi Anda telah lunas. Mitra akan segera berangkat ke lokasi Anda.
+            </p>
+            <Button 
+              className="w-full bg-teal-700 hover:bg-teal-800 mt-4"
+              onClick={() => setShowPaymentSuccess(false)}
+            >
+              Tutup
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-xl text-center space-y-4 animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 mb-2">
+              <AlertTriangle size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Hapus Postingan?</h3>
+            <p className="text-gray-500 text-sm">
+              Apakah Anda yakin ingin menghapus postingan ini? Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <div className="flex gap-3 mt-6">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+              >
+                Batal
+              </Button>
+              <Button 
+                className="flex-1 bg-red-600 hover:bg-red-700"
+                disabled={isDeleting}
+                onClick={async () => {
+                  setIsDeleting(true);
+                  try {
+                    const { deletePost } = await import("@/lib/services/post.service");
+                    await deletePost(post.id);
+                    router.push("/pelanggan/posts");
+                  } catch (error: any) {
+                    alert(error.response?.data?.message || "Gagal menghapus postingan. Pastikan statusnya masih open.");
+                    setIsDeleting(false);
+                    setShowDeleteConfirm(false);
+                  }
+                }}
+              >
+                {isDeleting ? "Menghapus..." : "Ya, Hapus"}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -54,6 +54,7 @@ export interface Claim {
   status: ClaimStatus;
   claimed_at: string;
   updated_at: string;
+  foto_bukti?: string | null;
   // Relasi (opsional)
   post?: Post;
   mitra?: { id: number; nama: string; foto_profil: string | null };

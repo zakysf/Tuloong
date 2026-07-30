@@ -56,7 +56,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             id={inputId}
             type={show ? "text" : "password"}
             className={cn(
-              "h-11 rounded-xl border-neutral-200 bg-white px-4 pr-10 text-sm",
+              "h-11 rounded-full border-neutral-200 bg-white px-4 pr-10 text-sm",
               "placeholder:text-neutral-400",
               "focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary",
               "transition-all duration-150",
