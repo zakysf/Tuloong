@@ -8,11 +8,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
 
+import LandingNavbar from "@/components/shared/LandingNavbar";
 import AuthSidebar from "@/components/shared/AuthSidebar";
 import FormInput from "@/components/shared/FormInput";
 import PasswordInput from "@/components/shared/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { login, parseApiError } from "@/lib/services/auth.service";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
 
@@ -32,6 +34,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -46,6 +49,7 @@ export default function LoginPage() {
     setServerError(null);
     try {
       const res = await login(data);
+      await refreshUser(); // Update AuthContext state
       // Redirect berdasarkan role user
       const redirectMap: Record<string, string> = {
         pelanggan: "/pelanggan",
@@ -60,7 +64,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-neutral-50 flex items-center justify-center p-4">
+    <>
+      <LandingNavbar />
+      <div className="min-h-dvh bg-neutral-50 flex items-center justify-center p-4 pt-24">
       <div
         className="w-full max-w-4xl grid md:grid-cols-[300px_1fr] rounded-3xl overflow-hidden soft-shadow-md md:h-[75vh] md:max-h-[620px] bg-white"
         style={{ minHeight: 480 }}
@@ -163,6 +169,8 @@ export default function LoginPage() {
             <Button
               type="button"
               variant="outline"
+              disabled
+              title="Fitur belum tersedia"
               className="w-full h-11 rounded-xl border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
               <svg className="mr-2" width="18" height="18" viewBox="0 0 48 48">
@@ -184,6 +192,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

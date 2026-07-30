@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, User, MapPin, Shield, Landmark, AlertCircle, Info } from "lucide-react";
 
+import LandingNavbar from "@/components/shared/LandingNavbar";
 import AuthSidebar from "@/components/shared/AuthSidebar";
 import FormInput from "@/components/shared/FormInput";
 import PasswordInput from "@/components/shared/PasswordInput";
@@ -18,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { registerMitra, parseApiError } from "@/lib/services/auth.service";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { PROVINSI_LIST, getKabupatenList, getKecamatanList, BANK_LIST } from "@/lib/data/wilayah";
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
@@ -60,6 +62,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function RegisterMitraPage() {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [ktpFile, setKtpFile] = useState<File | null>(null);
@@ -116,6 +119,7 @@ export default function RegisterMitraPage() {
         nama_pemilik_rekening: data.nama_pemilik_rekening,
         role: "mitra",
       });
+      await refreshUser();
       router.push("/register/mitra/pending");
     } catch (err) {
       const { message, fieldErrors: fe } = parseApiError(err);
@@ -143,7 +147,9 @@ export default function RegisterMitraPage() {
   );
 
   return (
-    <div className="min-h-dvh bg-neutral-50 flex items-center justify-center p-4 py-10">
+    <>
+      <LandingNavbar />
+      <div className="min-h-dvh bg-neutral-50 flex items-center justify-center p-4 pt-24 pb-10">
       <div className="w-full max-w-5xl grid md:grid-cols-[300px_1fr] rounded-3xl overflow-hidden soft-shadow-md md:h-[85vh] md:max-h-[800px] bg-white">
         {/* Left Panel */}
         <AuthSidebar variant="mitra" />
@@ -428,6 +434,8 @@ export default function RegisterMitraPage() {
             <Button
               type="button"
               variant="outline"
+              disabled
+              title="Fitur belum tersedia"
               className="w-full h-11 rounded-xl border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
               <svg className="mr-2" width="18" height="18" viewBox="0 0 48 48">
@@ -441,6 +449,7 @@ export default function RegisterMitraPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

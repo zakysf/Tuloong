@@ -154,3 +154,17 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::get('/settings', [SettingController::class, 'index']);
     Route::patch('/settings', [SettingController::class, 'update']);
 });
+
+Route::get('/test-headers', function (Illuminate\Http\Request $request) { return response()->json(['headers' => $request->headers->all()]); });
+
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash, Illuminate\Http\Request $request) {
+    $user = App\Models\User::findOrFail($id);
+    if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Invalid link'], 400);
+    }
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Illuminate\Auth\Events\Verified($user));
+    }
+    return redirect('http://localhost:3000/login?verified=1');
+})->middleware(['signed'])->name('verification.verify');

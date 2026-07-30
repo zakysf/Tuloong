@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -63,14 +64,13 @@ class AuthController extends Controller
             return $user;
         });
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        event(new Registered($user));
 
         return response()->json([
             'success' => true,
-            'message' => 'Registrasi pelanggan berhasil',
+            'message' => 'Registrasi pelanggan berhasil. Silakan cek kotak masuk email Anda untuk verifikasi.',
             'data'    => [
                 'user'  => $this->formatUser($user),
-                'token' => $token,
             ],
         ], 201);
     }
@@ -113,14 +113,13 @@ class AuthController extends Controller
             return $user;
         });
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        event(new Registered($user));
 
         return response()->json([
             'success' => true,
-            'message' => 'Registrasi mitra berhasil. Menunggu verifikasi admin.',
+            'message' => 'Registrasi mitra berhasil. Silakan cek kotak masuk email Anda untuk verifikasi.',
             'data'    => [
                 'user'  => $this->formatUser($user->load('mitraProfile')),
-                'token' => $token,
             ],
         ], 201);
     }
@@ -143,6 +142,15 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
+        // Cek apakah email sudah diverifikasi
+        if (!$user->hasVerifiedEmail()) {
+            Auth::logout();
+            return response()->json([
+                'success' => false,
+                'message' => 'Email belum diverifikasi. Silakan cek kotak masuk email Anda.',
+            ], 403);
+        }
 
         // Cek apakah akun nonaktif
         if ($user->status === 'nonaktif') {
