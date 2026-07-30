@@ -17,6 +17,7 @@ class UpdateStatusRequest extends FormRequest
     {
         return [
             'status' => 'required|in:on_the_way,working,done_by_mitra',
+            'foto_bukti' => 'required_if:status,done_by_mitra|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 
@@ -25,6 +26,10 @@ class UpdateStatusRequest extends FormRequest
         return [
             'status.required' => 'Status wajib diisi',
             'status.in'       => 'Status tidak valid. Pilihan: on_the_way, working, done_by_mitra',
+            'foto_bukti.required_if' => 'Foto bukti wajib diunggah ketika status diselesaikan.',
+            'foto_bukti.image'       => 'File foto bukti harus berupa gambar.',
+            'foto_bukti.mimes'       => 'Format foto bukti harus jpeg, png, atau jpg.',
+            'foto_bukti.max'         => 'Ukuran foto bukti tidak boleh lebih dari 2MB.',
         ];
     }
 
