@@ -18,8 +18,8 @@ export default function MitraDashboard() {
         const jobs = await getMyJobs();
         const active = jobs.filter((c: any) => c.status !== "done_by_mitra" && c.status !== "cancelled");
         setActiveJobsCount(active.length);
-      } catch (error) {
-        console.error("Gagal memuat data dashboard", error);
+      } catch (error: any) {
+        console.error("Gagal memuat data dashboard:", error?.message || error);
       } finally {
         setLoading(false);
       }

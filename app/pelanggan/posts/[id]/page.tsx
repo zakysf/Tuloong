@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { getPost } from "@/lib/services/post.service";
+import { getPost, deletePost } from "@/lib/services/post.service";
 import type { Post } from "@/types/post";
+import { toast } from "sonner";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Clock, Wallet, Info, MessageCircle, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,8 +42,8 @@ export default function DetailPostinganPage() {
       try {
         const data = await getPost(Number(id));
         setPost(data);
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        toast.error("Gagal mengambil detail postingan.");
       } finally {
         setLoading(false);
       }
@@ -344,11 +345,11 @@ export default function DetailPostinganPage() {
                 onClick={async () => {
                   setIsDeleting(true);
                   try {
-                    const { deletePost } = await import("@/lib/services/post.service");
                     await deletePost(post.id);
                     router.push("/pelanggan/posts");
                   } catch (error: any) {
-                    alert(error.response?.data?.message || "Gagal menghapus postingan. Pastikan statusnya masih open.");
+                    toast.error(error.response?.data?.message || "Gagal menghapus postingan. Pastikan statusnya masih open.");
+                  } finally {
                     setIsDeleting(false);
                     setShowDeleteConfirm(false);
                   }

@@ -54,6 +54,11 @@ api.interceptors.response.use(
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
+    } else if (error.response?.status === 403) {
+      // Token swapped or role mismatched - force sync by going home
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     }
     return Promise.reject(error);
   }

@@ -8,6 +8,7 @@ use App\Models\Claim;
 use App\Models\MitraProfile;
 use App\Models\Post;
 use App\Services\BadgeService;
+use App\Services\CloudinaryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,10 +16,12 @@ use Illuminate\Support\Facades\DB;
 class ClaimController extends Controller
 {
     protected BadgeService $badgeService;
+    protected CloudinaryService $cloudinaryService;
 
-    public function __construct(BadgeService $badgeService)
+    public function __construct(BadgeService $badgeService, CloudinaryService $cloudinaryService)
     {
         $this->badgeService = $badgeService;
+        $this->cloudinaryService = $cloudinaryService;
     }
 
     /**
@@ -124,8 +127,10 @@ class ClaimController extends Controller
             $fotoBuktiUrl = null;
 
             if ($request->hasFile('foto_bukti')) {
-                $uploaded = cloudinary()->upload($request->file('foto_bukti')->getRealPath());
-                $fotoBuktiUrl = $uploaded->getSecurePath();
+                $fotoBuktiUrl = $this->cloudinaryService->upload(
+                    $request->file('foto_bukti'),
+                    'tuloong/bukti_pekerjaan'
+                );
             } else {
                 return response()->json([
                     'success' => false,

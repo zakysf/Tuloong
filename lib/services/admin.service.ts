@@ -36,10 +36,10 @@ export async function getAdminMitra(
   const params = new URLSearchParams();
   if (filters?.status) params.set("status", filters.status);
 
-  const { data } = await api.get<BEListResponse<AdminMitra>>("/api/admin/mitra", {
+  const { data } = await api.get<any>("/api/admin/mitra", {
     params,
   });
-  return data.data;
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }
 
 export async function verifyMitra(
@@ -59,11 +59,11 @@ export async function getAdminTransactions(
   if (filters?.tanggal_dari) params.set("tanggal_dari", filters.tanggal_dari);
   if (filters?.tanggal_sampai) params.set("tanggal_sampai", filters.tanggal_sampai);
 
-  const { data } = await api.get<BEListResponse<AdminTransaction>>(
+  const { data } = await api.get<any>(
     "/api/admin/transactions",
     { params }
   );
-  return data.data;
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }
 
 // ─── Kelola Laporan ───────────────────────────────────────────────────────────
@@ -74,11 +74,11 @@ export async function getAdminReports(
   const params = new URLSearchParams();
   if (filters?.status) params.set("status", filters.status);
 
-  const { data } = await api.get<BEListResponse<AdminReport>>(
+  const { data } = await api.get<any>(
     "/api/admin/reports",
     { params }
   );
-  return data.data;
+  return Array.isArray(data.data) ? data.data : (data.data.data ?? []);
 }
 
 export async function tindaklanjutiReport(id: number): Promise<void> {

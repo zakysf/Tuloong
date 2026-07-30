@@ -6,6 +6,7 @@ import type { Post } from "@/types/post";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Search, Trash2, Edit, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 
 export default function PostinganSayaPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -21,8 +22,9 @@ export default function PostinganSayaPage() {
     try {
       const data = await getMyPosts();
       setPosts(data);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Gagal memuat postingan:", error?.message || error);
+      // Kita log, tapi tidak tampilkan error mentah agar Next.js tidak crash
     } finally {
       setLoading(false);
     }
@@ -38,8 +40,9 @@ export default function PostinganSayaPage() {
       await deletePost(deleteId);
       await fetchPosts();
       setDeleteId(null);
+      toast.success("Postingan berhasil dihapus!");
     } catch (error) {
-      alert("Gagal menghapus postingan. Pastikan statusnya masih open.");
+      toast.error("Gagal menghapus postingan. Pastikan statusnya masih open.");
     } finally {
       setIsDeleting(false);
     }

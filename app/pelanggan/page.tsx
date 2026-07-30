@@ -24,8 +24,8 @@ export default function PelangganDashboard() {
         ]);
         setPosts(myPosts);
         setTransactions(myTrans);
-      } catch (error) {
-        console.error("Gagal memuat data dashboard", error);
+      } catch (error: any) {
+        console.error("Gagal memuat data dashboard:", error?.message || error);
       } finally {
         setLoading(false);
       }

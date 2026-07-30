@@ -14,8 +14,8 @@ export default function MitraTransaksiPage() {
       try {
         const data = await getMitraTransactions();
         setTransactions(data);
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        console.error("Gagal memuat transaksi:", error?.message || error);
       } finally {
         setLoading(false);
       }

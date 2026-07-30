@@ -2,34 +2,29 @@
 
 namespace App\Services;
 
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Cloudinary;
 
 class CloudinaryService
 {
     /**
      * Upload file ke Cloudinary.
-     *
-     * @param  \Illuminate\Http\UploadedFile  $file
-     * @param  string  $folder  Folder di Cloudinary (misal: 'tuloong/ktp')
-     * @return string  URL file yang diupload
      */
     public function upload($file, string $folder = 'tuloong'): string
     {
-        $result = Cloudinary::upload($file->getRealPath(), [
+        $cloudinary = new Cloudinary(config('filesystems.disks.cloudinary.url'));
+        $result = $cloudinary->uploadApi()->upload($file->getRealPath(), [
             'folder' => $folder,
         ]);
 
-        return $result->getSecurePath();
+        return $result['secure_url'];
     }
 
     /**
      * Hapus file dari Cloudinary berdasarkan public ID.
-     *
-     * @param  string  $publicId
-     * @return void
      */
     public function delete(string $publicId): void
     {
-        Cloudinary::destroy($publicId);
+        $cloudinary = new Cloudinary(config('filesystems.disks.cloudinary.url'));
+        $cloudinary->uploadApi()->destroy($publicId);
     }
 }

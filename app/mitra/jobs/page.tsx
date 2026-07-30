@@ -19,8 +19,8 @@ export default function CariJobPage() {
         const data = await getPosts();
         // Hanya tampilkan post yang statusnya "open"
         setPosts(data.filter((p: Post) => p.status === "open"));
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        console.error("Gagal mengambil daftar pekerjaan:", error?.message || error);
       } finally {
         setLoading(false);
       }

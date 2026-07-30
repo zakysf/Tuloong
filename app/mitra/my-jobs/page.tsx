@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getMyJobs, updateClaimStatus } from "@/lib/services/claim.service";
+import { toast } from "sonner";
 import Link from "next/link";
 import { Briefcase, ArrowRight, Loader2, MessageCircle, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,8 @@ export default function JobSayaPage() {
     try {
       const data = await getMyJobs();
       setJobs(data);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Gagal memuat pekerjaan:", error?.message || error);
     } finally {
       setLoading(false);
     }
@@ -36,7 +37,7 @@ export default function JobSayaPage() {
       await updateClaimStatus(claimId, nextStatus as any);
       await fetchJobs(); // refresh list
     } catch (error: any) {
-      alert(error.response?.data?.message || "Gagal memperbarui status.");
+      toast.error(error.response?.data?.message || "Gagal memperbarui status.");
     } finally {
       setUpdatingId(null);
     }
@@ -45,7 +46,7 @@ export default function JobSayaPage() {
   const handleSubmitSelesai = async () => {
     if (!uploadClaimId) return;
     if (!fotoBukti) {
-      alert("Harap unggah foto bukti pekerjaan terlebih dahulu.");
+      toast.error("Harap unggah foto bukti pekerjaan terlebih dahulu.");
       return;
     }
     
@@ -55,8 +56,9 @@ export default function JobSayaPage() {
       await fetchJobs();
       setUploadClaimId(null);
       setFotoBukti(null);
+      toast.success("Pekerjaan berhasil diselesaikan dan menunggu konfirmasi!");
     } catch (error: any) {
-      alert(error.response?.data?.message || "Gagal memperbarui status.");
+      toast.error(error.response?.data?.message || "Gagal memperbarui status.");
     } finally {
       setUpdatingId(null);
     }

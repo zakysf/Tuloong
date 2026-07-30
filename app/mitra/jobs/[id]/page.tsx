@@ -25,8 +25,8 @@ export default function DetailJobMitraPage() {
       try {
         const data = await getPost(Number(id));
         setPost(data);
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        console.error("Gagal memuat detail pekerjaan:", err?.message || err);
       } finally {
         setLoading(false);
       }
