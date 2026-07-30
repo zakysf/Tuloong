@@ -67,6 +67,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $request->validate([
+            'nama'          => 'sometimes|string|max:255',
             'email'         => 'sometimes|email|unique:users,email,' . $user->id,
             'password'      => 'sometimes|string|min:8|confirmed',
             'nomor_telepon' => 'sometimes|string|max:20',
@@ -81,6 +82,9 @@ class ProfileController extends Controller
             // Update user data
             $userData = [];
 
+            if ($request->has('nama') && $user->role === 'pelanggan') {
+                $userData['nama'] = $request->nama;
+            }
             if ($request->has('email')) {
                 $userData['email'] = $request->email;
             }

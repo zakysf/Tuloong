@@ -52,6 +52,8 @@ export async function updateProfile(
   // Jika ada file (foto_profil), gunakan FormData
   if (payload.foto_profil instanceof File) {
     const formData = new FormData();
+    formData.append("_method", "PATCH"); // Workaround Laravel untuk multipart PATCH
+    
     (Object.keys(payload) as Array<keyof UpdateProfilePayload>).forEach(
       (key) => {
         const value = payload[key];
@@ -60,7 +62,8 @@ export async function updateProfile(
         }
       }
     );
-    const { data } = await api.patch<BEResponse<User>>("/api/profile", formData, {
+    // Gunakan api.post karena PHP tidak membaca form-data pada request PATCH/PUT murni
+    const { data } = await api.post<BEResponse<User>>("/api/profile", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return data.data;

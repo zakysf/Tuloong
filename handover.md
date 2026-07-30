@@ -28,24 +28,30 @@ Berikut adalah ringkasan dari semua *bug* dan perbaikan yang telah kita selesaik
 - **Penyebab:** API Laravel (menggunakan `->paginate()`) mengembalikan data array yang dibungkus dalam properti `.data`. Frontend salah menangkap objek paginasi tersebut sebagai array.
 - **Solusi:** Memodifikasi `lib/services/admin.service.ts` agar frontend secara pintar mendeteksi dan mengekstrak array asli (contoh: `data.data.data ?? []`), sehingga halaman Admin kembali normal.
 
+### 5. Validasi Upload File dan Foto Profil (Cloudinary)
+- **Solusi:** Menambahkan validasi gambar (`mimes:jpeg,png,jpg|max:2048`) untuk foto bukti di `UpdateStatusRequest.php`. Selain itu, kami juga memperbaiki *bug* unggah foto profil (PATCH) di *frontend* dengan trik *method spoofing* `_method="PATCH"` pada `profile.service.ts` agar terbaca oleh *backend* Laravel.
+
+### 6. Perbaikan Pembaruan Profil (Nama) dan Masalah Chat
+- **Solusi:** Memperbarui fungsi `update()` di `ProfileController` agar pengguna (Pelanggan) dapat benar-benar mengganti namanya. Di sisi *frontend*, sistem *optimistic update* pada chat telah dihilangkan dan diganti dengan pemanggilan ulang secara instan untuk mencegah *race-condition* dengan *polling* yang membuat chat terkesan hilang-timbul.
+
 ---
 
-## 📌 Apa yang Harus Dikerjakan Selanjutnya (Next Steps)?
+## 📌 Apa yang Harus Dikerjakan Selanjutnya oleh Dev Lain?
 
-Untuk rekan tim yang akan melanjutkan pengerjaan proyek ini, berikut adalah prioritas yang perlu difokuskan:
+Tim *developer* yang melanjutkan proyek ini hanya tinggal melakukan beberapa pengujian dan konfigurasi manual yang tidak bisa diautomasikan:
 
 > [!IMPORTANT]
-> **1. Validasi Ukuran File Upload (Cloudinary)**
-> Walaupun fitur unggah foto sudah berjalan lancar, saat ini belum ada batasan ukuran file. Pastikan untuk menambahkan validasi di Laravel (contoh: `mimes:jpeg,png,jpg|max:2048`) di `ClaimController` agar server/Cloudinary tidak dipenuhi oleh file gambar raksasa.
+> **1. Uji Coba Webhook / Callback Midtrans**
+> *Source code* untuk webhook sudah siap. Anda harus mengekspos *port* lokal Anda menggunakan layanan seperti **Ngrok** (misal: `ngrok http 8000`), lalu memasukkan URL Ngrok tersebut ke menu **Payment Notification URL** di *Dashboard Midtrans Sandbox* Anda. Lakukan pembayaran fiktif di aplikasi dan pastikan status transaksi berubah dari `pending` menjadi `paid`.
 
 > [!TIP]
-> **2. Testing Webhook/Callback Midtrans**
-> Kita perlu melakukan uji coba penuh (*End-to-End*) untuk alur pembayaran Midtrans. Pastikan rute Callback/Webhook dari Midtrans bisa ditangkap dengan benar oleh Laravel untuk mengubah status transaksi dari "Belum Bayar" menjadi "Lunas".
+> **2. Testing Fitur Real-time WebSocket (Reverb)**
+> Aplikasi ini sudah menggunakan Laravel Reverb untuk notifikasi/chat secara *real-time*. Jalankan perintah `php artisan reverb:start`. Buka dua tab *browser* (login sebagai Pelanggan dan Mitra) lalu pastikan *chat* masuk secara instan tanpa perlu memuat ulang (*refresh*) halaman.
 
 > [!NOTE]
-> **3. Testing Fitur Real-time WebSocket (Reverb)**
-> Aplikasi ini dikonfigurasi menggunakan Laravel Reverb. Pastikan *server* Reverb berjalan stabil dan pesan/notifikasi bisa ditransmisikan ke frontend Next.js tanpa ada kendala port/koneksi.
+> **3. Konfigurasi SMTP (Pengiriman Email)**
+> File `.env.example` sudah disesuaikan strukturnya, tapi pengiriman email konfirmasi (saat registrasi) saat ini masih menggunakan `MAIL_MAILER=log` jika tidak diatur. Jika Anda butuh email sungguhan saat *testing*, pastikan Anda mengubah `.env` lokal Anda dan memasukkan kredensial SMTP seperti **Mailtrap** atau **Google App Password**.
 
 > [!WARNING]
-> **4. Persiapan Variabel Lingkungan (Environment) Production**
-> Saat nanti *deploy* ke *server production* (seperti Vercel & VPS), pastikan seluruh konfigurasi `.env` (terutama `CLOUDINARY_URL` dan Kunci Midtrans) dimasukkan ke dalam pengaturan variabel *environment* server tujuan.
+> **4. Persiapan Deployment ke Production**
+> Saat men-*deploy* ke VPS atau Vercel nanti, baca file `.env.example`. Masukkan semua kunci rahasia (*secret keys*) dari Cloudinary, Midtrans (ubah `MIDTRANS_IS_PRODUCTION=true`), dan Reverb ke dalam pengaturan *environment* variabel di panel *hosting* Anda.

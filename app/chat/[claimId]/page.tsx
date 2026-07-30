@@ -58,25 +58,19 @@ export default function ChatPage() {
     if (!newMessage.trim() || sending) return;
 
     setSending(true);
-    try {
-      // Optimistic update
-      const tempMsg: Message = {
-        id: Date.now(),
-        claim_id: Number(claimId),
-        sender_id: user!.id,
-        body: newMessage.trim(),
-        created_at: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, tempMsg]);
-      setNewMessage("");
+    const msgText = newMessage.trim();
+    setNewMessage("");
 
+    try {
       // Actual send
-      const sentMsg = await sendMessage(Number(claimId), tempMsg.body);
+      await sendMessage(Number(claimId), msgText);
       
-      // Update the temp msg with real id (or just rely on next poll)
-      setMessages((prev) => prev.map(m => m.id === tempMsg.id ? sentMsg : m));
+      // Segera update daftar pesan dari server agar stabil dan tidak hilang
+      const data = await getMessages(Number(claimId));
+      setMessages(data);
     } catch (error) {
       alert("Gagal mengirim pesan");
+      setNewMessage(msgText); // Kembalikan teks jika gagal
     } finally {
       setSending(false);
     }
