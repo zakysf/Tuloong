@@ -66,17 +66,22 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $request->validate([
-            'nama'          => 'sometimes|string|max:255',
-            'email'         => 'sometimes|email|unique:users,email,' . $user->id,
-            'password'      => 'sometimes|string|min:8|confirmed',
-            'nomor_telepon' => 'sometimes|string|max:20',
-            'foto_profil'   => 'sometimes|file|mimes:jpg,jpeg,png|max:2048',
-            // Pelanggan-specific
-            'provinsi'      => 'sometimes|string|max:100',
-            'kabupaten'     => 'sometimes|string|max:100',
-            'kecamatan'     => 'sometimes|string|max:100',
-        ]);
+        try {
+            $request->validate([
+                'nama'          => 'sometimes|nullable|string|max:255',
+                'email'         => 'sometimes|nullable|email|unique:users,email,' . $user->id,
+                'password'      => 'sometimes|nullable|string|min:8|confirmed',
+                'nomor_telepon' => 'sometimes|nullable|string|max:20',
+                'foto_profil'   => 'sometimes|nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
+                // Pelanggan-specific
+                'provinsi'      => 'sometimes|nullable|string|max:100',
+                'kabupaten'     => 'sometimes|nullable|string|max:100',
+                'kecamatan'     => 'sometimes|nullable|string|max:100',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Illuminate\Support\Facades\Log::error('Validation failed in ProfileController', $e->errors());
+            throw $e;
+        }
 
         DB::transaction(function () use ($request, $user) {
             // Update user data

@@ -28,8 +28,14 @@ Berikut adalah ringkasan dari semua *bug* dan perbaikan yang telah kita selesaik
 - **Penyebab:** API Laravel (menggunakan `->paginate()`) mengembalikan data array yang dibungkus dalam properti `.data`. Frontend salah menangkap objek paginasi tersebut sebagai array.
 - **Solusi:** Memodifikasi `lib/services/admin.service.ts` agar frontend secara pintar mendeteksi dan mengekstrak array asli (contoh: `data.data.data ?? []`), sehingga halaman Admin kembali normal.
 
-### 5. Validasi Upload File dan Foto Profil (Cloudinary)
-- **Solusi:** Menambahkan validasi gambar (`mimes:jpeg,png,jpg|max:2048`) untuk foto bukti di `UpdateStatusRequest.php`. Selain itu, kami juga memperbaiki *bug* unggah foto profil (PATCH) di *frontend* dengan trik *method spoofing* `_method="PATCH"` pada `profile.service.ts` agar terbaca oleh *backend* Laravel.
+### 5. Validasi Upload File dan Foto Profil (Cloudinary & Axios Bug)
+- **Masalah:** Saat mengunggah foto profil, sistem tidak merespons perubahan (tidak gagal tapi foto tidak terganti), atau sering mendapat respons `422 Unprocessable Entity` (Validasi Gagal) meski gambar berukuran kecil.
+- **Penyebab Utama:** 
+  1. *Frontend* memaksa pengaturan header `Content-Type: multipart/form-data` secara manual di Axios, sehingga *boundary string* yang krusial hilang dan menyebabkan payload ditolak/tidak terbaca oleh PHP.
+  2. Aturan validasi *backend* Laravel terlalu kaku (menolak nilai kosong/null pada atribut yang bersifat opsional) serta membatasi ukuran gambar yang terlalu kecil (2MB).
+- **Solusi:** 
+  1. Menghapus pengaturan manual `Content-Type` dari `profile.service.ts` agar Axios menggunakan *boundary* dinamis otomatis. (Juga menerapkan *method spoofing* `_method="PATCH"`).
+  2. Melonggarkan validasi di `ProfileController.php` dengan menambahkan parameter `nullable` pada atribut opsional, menambahkan dukungan format `.webp`, dan menambah batas ukuran gambar menjadi **5MB**.
 
 ### 6. Perbaikan Pembaruan Profil (Nama) dan Masalah Chat
 - **Solusi:** Memperbarui fungsi `update()` di `ProfileController` agar pengguna (Pelanggan) dapat benar-benar mengganti namanya. Di sisi *frontend*, sistem *optimistic update* pada chat telah dihilangkan dan diganti dengan pemanggilan ulang secara instan untuk mencegah *race-condition* dengan *polling* yang membuat chat terkesan hilang-timbul.
@@ -42,7 +48,9 @@ Tim *developer* yang melanjutkan proyek ini hanya tinggal melakukan beberapa pen
 
 > [!IMPORTANT]
 > **1. Uji Coba Webhook / Callback Midtrans**
-> *Source code* untuk webhook sudah siap. Anda harus mengekspos *port* lokal Anda menggunakan layanan seperti **Ngrok** (misal: `ngrok http 8000`), lalu memasukkan URL Ngrok tersebut ke menu **Payment Notification URL** di *Dashboard Midtrans Sandbox* Anda. Lakukan pembayaran fiktif di aplikasi dan pastikan status transaksi berubah dari `pending` menjadi `paid`.
+> *Source code* untuk webhook sudah siap. Anda harus mengekspos *port* lokal (8000) agar bisa diakses internet oleh Midtrans. Cara termudah tanpa meng-install apapun (karena sudah ada NodeJS) adalah menjalankan:
+> `npx localtunnel --port 8000`
+> Setelah muncul URL publiknya (misal: `https://abcd.loca.lt`), masukkan URL tersebut ditambah `/api/webhook/midtrans` ke menu **Payment Notification URL** di *Dashboard Midtrans Sandbox*. Lakukan pembayaran fiktif dan pastikan status di DB berubah menjadi `paid`.
 
 > [!TIP]
 > **2. Testing Fitur Real-time WebSocket (Reverb)**
@@ -53,5 +61,11 @@ Tim *developer* yang melanjutkan proyek ini hanya tinggal melakukan beberapa pen
 > File `.env.example` sudah disesuaikan strukturnya, tapi pengiriman email konfirmasi (saat registrasi) saat ini masih menggunakan `MAIL_MAILER=log` jika tidak diatur. Jika Anda butuh email sungguhan saat *testing*, pastikan Anda mengubah `.env` lokal Anda dan memasukkan kredensial SMTP seperti **Mailtrap** atau **Google App Password**.
 
 > [!WARNING]
-> **4. Persiapan Deployment ke Production**
-> Saat men-*deploy* ke VPS atau Vercel nanti, baca file `.env.example`. Masukkan semua kunci rahasia (*secret keys*) dari Cloudinary, Midtrans (ubah `MIDTRANS_IS_PRODUCTION=true`), dan Reverb ke dalam pengaturan *environment* variabel di panel *hosting* Anda.
+> **4. Persiapan Deployment ke Production (Vercel / VPS)**
+> Saat men-*deploy* ke VPS atau Vercel nanti, baca file `.env.example`. Masukkan semua kunci rahasia (*secret keys*) dari Cloudinary, Midtrans, dan Reverb ke dalam pengaturan *environment* variabel di panel *hosting* Anda. 
+> 
+> **Catatan Penting untuk Lomba:** Jika aplikasi ini di-*deploy* murni untuk **keperluan lomba/demonstrasi**, Anda **SANGAT BISA dan DISARANKAN** untuk tetap menggunakan Midtrans versi *Sandbox*. Caranya:
+> - Tetap biarkan `MIDTRANS_IS_PRODUCTION=false` di *environment* variabel *server*.
+> - Tetap gunakan *Server Key* dan *Client Key* versi *Sandbox* (yang berawalan `SB-Mid-...`).
+> - Di Vercel (Next.js), pastikan `NEXT_PUBLIC_MIDTRANS_SNAP_URL` tetap mengarah ke `https://app.sandbox.midtrans.com/snap/snap.js`.
+> - Jangan lupa ubah URL *Webhook* di Dashboard Midtrans dari alamat `localtunnel` menjadi URL *backend* asli Anda yang sudah *live* (misal: `https://api.domainanda.com/api/webhook/midtrans`).
