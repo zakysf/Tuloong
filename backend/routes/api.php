@@ -118,6 +118,7 @@ Route::middleware(['auth:sanctum', 'role:pelanggan'])->group(function () {
     Route::patch('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
     Route::get('/pelanggan/posts', [PostController::class, 'myPosts']);
+    Route::post('/posts/{id}/confirm-done', [PostController::class, 'confirmDone']);
 
     // Transaksi
     Route::get('/pelanggan/transactions', [TransactionController::class, 'index']);

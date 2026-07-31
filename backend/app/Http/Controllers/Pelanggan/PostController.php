@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Pelanggan;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Models\Post;
+use App\Models\MitraProfile;
+use App\Services\BadgeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -171,6 +174,57 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Postingan berhasil dihapus',
+        ]);
+    }
+
+    /**
+     * POST /api/posts/{id}/confirm-done — Pelanggan mengkonfirmasi pekerjaan selesai (Escrow).
+     */
+    public function confirmDone(Request $request, int $id, BadgeService $badgeService): JsonResponse
+    {
+        $post = Post::with(['claim', 'transaction'])->findOrFail($id);
+
+        if ($post->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak',
+            ], 403);
+        }
+
+        if (!$post->claim || $post->claim->status !== 'done_by_mitra') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pekerjaan belum diselesaikan oleh Mitra.',
+            ], 422);
+        }
+
+        if ($post->status === 'done') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pekerjaan sudah dikonfirmasi.',
+            ], 422);
+        }
+
+        DB::transaction(function () use ($post, $badgeService) {
+            // Update transaksi → completed
+            if ($post->transaction) {
+                $post->transaction->update(['status' => 'completed']);
+            }
+
+            // Update post → done
+            $post->update(['status' => 'done']);
+
+            // Increment total_job_selesai mitra
+            MitraProfile::where('user_id', $post->claim->mitra_id)
+                ->increment('total_job_selesai');
+
+            // Evaluasi badge mitra
+            $badgeService->evaluate($post->claim->mitra_id);
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pekerjaan berhasil dikonfirmasi selesai. Pembayaran akan diteruskan ke Mitra.',
         ]);
     }
 }

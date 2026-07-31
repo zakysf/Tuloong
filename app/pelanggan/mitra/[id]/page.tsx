@@ -6,6 +6,7 @@ import { getPublicMitraProfile } from "@/lib/services/profile.service";
 import Link from "next/link";
 import { ArrowLeft, Star, Trophy, ShieldCheck, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MitraBadge } from "@/components/shared/MitraBadge";
 
 export default function ProfilPublikMitraPage() {
   const { id } = useParams();
@@ -58,6 +59,7 @@ export default function ProfilPublikMitraPage() {
                 <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full flex items-center gap-1">
                   <ShieldCheck size={14} /> Terverifikasi
                 </span>
+                {info?.badge && <MitraBadge badge={info.badge} />}
                 <span className="flex items-center gap-1 text-sm text-gray-500">
                   <MapPin size={14} /> {info.kabupaten}, {info.provinsi}
                 </span>

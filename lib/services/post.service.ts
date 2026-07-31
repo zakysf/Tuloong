@@ -65,6 +65,12 @@ export async function deletePost(id: number): Promise<void> {
   await api.delete(`/api/posts/${id}`);
 }
 
+// ─── Confirm Done (Pelanggan) ─────────────────────────────────────────────────
+
+export async function confirmJobDone(id: number): Promise<void> {
+  await api.post(`/api/posts/${id}/confirm-done`);
+}
+
 // ─── My Posts (Pelanggan) ─────────────────────────────────────────────────────
 
 export async function getMyPosts(): Promise<Post[]> {

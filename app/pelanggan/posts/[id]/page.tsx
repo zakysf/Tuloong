@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { getPost, deletePost } from "@/lib/services/post.service";
+import { getPost, deletePost, confirmJobDone } from "@/lib/services/post.service";
 import type { Post } from "@/types/post";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -28,6 +28,7 @@ export default function DetailPostinganPage() {
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   useEffect(() => {
     if (paymentStatus === 'success') {
@@ -50,6 +51,22 @@ export default function DetailPostinganPage() {
     }
     fetchPost();
   }, [id]);
+
+  const handleConfirmDone = async () => {
+    if (!post) return;
+    try {
+      setIsConfirming(true);
+      await confirmJobDone(post.id);
+      toast.success("Pekerjaan berhasil dikonfirmasi selesai!");
+      // Reload post data
+      const data = await getPost(post.id);
+      setPost(data);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Gagal mengkonfirmasi pekerjaan");
+    } finally {
+      setIsConfirming(false);
+    }
+  };
 
   if (loading) {
     return <div className="p-8 text-center text-gray-500">Memuat detail...</div>;
@@ -251,6 +268,17 @@ export default function DetailPostinganPage() {
                   </Button>
                 </Link>
                 
+                {post.status === 'in_progress' && post.claim?.status === 'done_by_mitra' && (
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700 justify-center gap-2"
+                    onClick={handleConfirmDone}
+                    disabled={isConfirming}
+                  >
+                    <CheckCircle2 size={16} /> 
+                    {isConfirming ? "Memproses..." : "Konfirmasi Selesai"}
+                  </Button>
+                )}
+
                 {post.status === 'done' && !post.review && (
                   <Button 
                     variant="outline" 

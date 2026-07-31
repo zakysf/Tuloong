@@ -6,6 +6,7 @@ import { updateProfile } from "@/lib/services/profile.service";
 import FormInput from "@/components/shared/FormInput";
 import { Button } from "@/components/ui/button";
 import { Loader2, UserCircle, Trophy, ShieldCheck, ShieldAlert, Star } from "lucide-react";
+import { MitraBadge } from "@/components/shared/MitraBadge";
 
 export default function MitraProfilPage() {
   const { user, refreshUser } = useAuth();
@@ -139,7 +140,7 @@ export default function MitraProfilPage() {
       <div className="space-y-6">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
           
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 flex flex-col items-center gap-3">
             {mitraInfo?.verification_status === 'aktif' ? (
               <div className="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-full flex items-center gap-2 font-medium text-sm">
                 <ShieldCheck size={18} /> Mitra Terverifikasi
@@ -153,10 +154,10 @@ export default function MitraProfilPage() {
                 <ShieldAlert size={18} /> Menunggu Verifikasi
               </div>
             )}
-          </div>
-
-          <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center bg-teal-50 text-teal-600 mb-3">
-            <Trophy size={32} />
+            
+            {mitraInfo?.verification_status === 'aktif' && mitraInfo?.badge && (
+              <MitraBadge badge={mitraInfo.badge} className="px-3 py-1 text-sm" />
+            )}
           </div>
           <h3 className="font-bold text-gray-900">{mitraInfo?.badge || 'Newbie'}</h3>
           <p className="text-sm text-gray-500 mb-6">Badge Kepercayaan</p>

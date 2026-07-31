@@ -146,18 +146,7 @@ class ClaimController extends Controller
                     'updated_at' => now()
                 ]);
 
-                // Update transaksi → completed
-                $claim->transaction->update(['status' => 'completed']);
-
-                // Update post → done
-                $claim->post->update(['status' => 'done']);
-
-                // Increment total_job_selesai mitra
-                MitraProfile::where('user_id', $mitra->id)
-                    ->increment('total_job_selesai');
-
-                // Evaluasi badge mitra
-                $this->badgeService->evaluate($mitra->id);
+                // Hanya update claim status. Transaksi & post menunggu konfirmasi Pelanggan.
             });
         } else {
             $claim->update(['status' => $newStatus, 'updated_at' => now()]);
