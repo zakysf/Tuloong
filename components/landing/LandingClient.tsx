@@ -50,16 +50,15 @@ export default function LandingClient() {
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[0.95] text-neutral-950">
-              Butuh bantuan?
-              <br />
+              Butuh bantuan? <br />minta{" "}
               <span className="bg-gradient-to-r from-[#F2632A] via-amber-600 to-[#1A5C48] bg-clip-text text-transparent">
                 Tuloong
-              </span>{" "}
-              aja langsung.
+              </span> <br />
+              aja.
             </h1>
 
             <p className="text-neutral-500 text-lg md:text-xl mt-6 leading-relaxed max-w-xl">
-              Platform jasa dengan sistem terbalik (*reverse marketplace*). Cukup post tugas Anda, pasang tarif yang Anda mau, lalu pilih Mitra terbaik yang mengajukan penawaran.
+              Platform jasa dengan sistem terbalik (reverse marketplace). Cukup post tugas Anda, pasang tarif yang Anda mau, lalu pilih Mitra terbaik yang mengajukan penawaran.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -192,14 +191,116 @@ export default function LandingClient() {
                 <p className="text-neutral-500 text-xs leading-relaxed">
                   {s.desc}
                 </p>
-                <div className="mt-5 flex items-center gap-1.5 text-xs font-bold text-[#1A5C48] opacity-0 group-hover:opacity-100 transition-all transform translate-y-1 group-hover:translate-y-0">
-                  Coba Order Jasa <ArrowRight size={13} />
-                </div>
               </div>
             );
           })}
         </div>
       </section>
+
+      {/* ══ MITRA CALL TO ACTION ════════════════════════════════════════════ */}
+      <section id="mitra" className="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
+        <div className="relative bg-[#1A5C48] rounded-[2.5rem] overflow-hidden border border-[#1A5C48]/20 shadow-2xl shadow-[#1A5C48]/20">
+          {/* Dynamic Background */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(242,99,42,0.25),transparent_50%)] pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute -left-20 -bottom-20 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
+
+          {/* Grid Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 p-10 md:p-16 lg:p-20">
+            {/* Left Content */}
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md mb-8">
+                <span className="w-2 h-2 rounded-full bg-[#F2632A] animate-pulse" />
+                <span className="text-[11px] font-bold text-white tracking-widest uppercase">
+                  Peluang Penghasilan Baru
+                </span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1]" style={{ fontFamily: "var(--font-heading)" }}>
+                Punya Keahlian? <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-white">Jadikan Penghasilan.</span>
+              </h2>
+
+              <p className="text-emerald-50/80 text-base md:text-lg mt-6 leading-relaxed font-medium">
+                Tuloong memberikan Anda kebebasan. Terima orderan jasa di sekitar Anda, tentukan sendiri jam kerja, dan bawa pulang 100% uang Anda tanpa potongan komisi yang mencekik.
+              </p>
+
+              {/* Badges/Features */}
+              <div className="mt-10 grid grid-cols-2 gap-4">
+                {[
+                  { icon: DollarSign, text: "Cair Kapan Saja" },
+                  { icon: Clock, text: "Waktu Fleksibel" },
+                  { icon: Users, text: "Bebas Tawar Harga" },
+                  { icon: ShieldCheck, text: "Aman Terpercaya" },
+                ].map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                        <Icon size={18} className="text-[#F2632A]" />
+                      </div>
+                      <span className="text-sm font-bold text-white">{item.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-12 flex flex-wrap gap-4 items-center">
+                <Link href="/register/mitra">
+                  <Button className="h-14 px-8 rounded-2xl text-sm font-bold bg-[#F2632A] hover:bg-[#d9511d] text-white shadow-xl shadow-[#F2632A]/20 transition-all hover:-translate-y-1 cursor-pointer">
+                    Daftar Sebagai Mitra
+                    <ArrowUpRight size={18} className="ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="ghost" className="h-14 px-6 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
+                    Sudah Punya Akun?
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Illustration/Image Area */}
+            <div className="relative hidden lg:block h-[500px]">
+              {/* Decorative elements behind image */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A5C48] via-transparent to-transparent z-10 rounded-[2.5rem]" />
+
+              {/* Floating Cards simulating UI */}
+              <div className="absolute top-10 -left-12 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_4s_infinite_ease-in-out]">
+                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                  <DollarSign size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Pendapatan Hari Ini</p>
+                  <p className="text-lg font-extrabold text-neutral-900">Rp 350.000</p>
+                </div>
+              </div>
+
+              <div className="absolute bottom-20 -right-8 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_5s_infinite_ease-in-out_reverse]">
+                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
+                  <Star size={20} className="fill-amber-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Rating Anda</p>
+                  <p className="text-lg font-extrabold text-neutral-900">4.9 / 5.0</p>
+                </div>
+              </div>
+
+              {/* The Image itself - assuming tuloong_hero_worker.png exists */}
+              <div className="absolute bottom-0 right-0 w-full h-[110%] flex items-end justify-center">
+                <Image
+                  src="/tuloong_hero_worker.png"
+                  alt="Mitra Tuloong"
+                  width={500}
+                  height={600}
+                  className="object-contain object-bottom w-[85%] h-auto relative z-0 drop-shadow-2xl filter contrast-105"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* ══ WHY SECURITY & TRANSPARENCY MATTERS ════════════════════════════ */}
       <section id="keamanan" className="py-24 px-6 bg-gradient-to-b from-white to-neutral-50 border-t border-neutral-100 scroll-mt-20">
@@ -280,111 +381,6 @@ export default function LandingClient() {
         </div>
       </section>
 
-      {/* ══ MITRA CALL TO ACTION ════════════════════════════════════════════ */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="relative bg-[#1A5C48] rounded-[2.5rem] overflow-hidden border border-[#1A5C48]/20 shadow-2xl shadow-[#1A5C48]/20">
-          {/* Dynamic Background */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(242,99,42,0.25),transparent_50%)] pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -left-20 -bottom-20 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
-
-          {/* Grid Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 p-10 md:p-16 lg:p-20">
-            {/* Left Content */}
-            <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md mb-8">
-                <span className="w-2 h-2 rounded-full bg-[#F2632A] animate-pulse" />
-                <span className="text-[11px] font-bold text-white tracking-widest uppercase">
-                  Peluang Penghasilan Baru
-                </span>
-              </div>
-              
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1]" style={{ fontFamily: "var(--font-heading)" }}>
-                Punya Keahlian? <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-white">Jadikan Penghasilan.</span>
-              </h2>
-              
-              <p className="text-emerald-50/80 text-base md:text-lg mt-6 leading-relaxed font-medium">
-                Tuloong memberikan Anda kebebasan. Terima orderan jasa di sekitar Anda, tentukan sendiri jam kerja, dan bawa pulang 100% uang Anda tanpa potongan komisi yang mencekik.
-              </p>
-
-              {/* Badges/Features */}
-              <div className="mt-10 grid grid-cols-2 gap-4">
-                {[
-                  { icon: DollarSign, text: "Cair Kapan Saja" },
-                  { icon: Clock, text: "Waktu Fleksibel" },
-                  { icon: Users, text: "Bebas Tawar Harga" },
-                  { icon: ShieldCheck, text: "Aman Terpercaya" },
-                ].map((item, i) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                        <Icon size={18} className="text-[#F2632A]" />
-                      </div>
-                      <span className="text-sm font-bold text-white">{item.text}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              
-              <div className="mt-12 flex flex-wrap gap-4 items-center">
-                <Link href="/register/mitra">
-                  <Button className="h-14 px-8 rounded-2xl text-sm font-bold bg-[#F2632A] hover:bg-[#d9511d] text-white shadow-xl shadow-[#F2632A]/20 transition-all hover:-translate-y-1 cursor-pointer">
-                    Daftar Sebagai Mitra
-                    <ArrowUpRight size={18} className="ml-2" />
-                  </Button>
-                </Link>
-                <Link href="/login">
-                  <Button variant="ghost" className="h-14 px-6 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
-                    Sudah Punya Akun?
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Illustration/Image Area */}
-            <div className="relative hidden lg:block h-[500px]">
-              {/* Decorative elements behind image */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A5C48] via-transparent to-transparent z-10 rounded-[2.5rem]" />
-              
-              {/* Floating Cards simulating UI */}
-              <div className="absolute top-10 -left-12 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_4s_infinite_ease-in-out]">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-                  <DollarSign size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Pendapatan Hari Ini</p>
-                  <p className="text-lg font-extrabold text-neutral-900">Rp 350.000</p>
-                </div>
-              </div>
-
-              <div className="absolute bottom-20 -right-8 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_5s_infinite_ease-in-out_reverse]">
-                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
-                  <Star size={20} className="fill-amber-500" />
-                </div>
-                <div>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Rating Anda</p>
-                  <p className="text-lg font-extrabold text-neutral-900">4.9 / 5.0</p>
-                </div>
-              </div>
-
-              {/* The Image itself - assuming tuloong_hero_worker.png exists */}
-              <div className="absolute bottom-0 right-0 w-full h-[110%] flex items-end justify-center">
-                 <Image 
-                    src="/tuloong_hero_worker.png" 
-                    alt="Mitra Tuloong" 
-                    width={500} 
-                    height={600} 
-                    className="object-contain object-bottom w-[85%] h-auto relative z-0 drop-shadow-2xl filter contrast-105"
-                 />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
       {/* ══ DONATION & COMMUNITY SUPPORT ════════════════════════════════════ */}
       <section className="py-20 px-6 bg-neutral-50/50 border-t border-neutral-100">
         <div className="max-w-7xl mx-auto">
@@ -405,61 +401,14 @@ export default function LandingClient() {
       </section>
 
       {/* ══ FOOTER ══════════════════════════════════════════════════════════ */}
-      <footer className="bg-white border-t border-neutral-100 py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 md:grid-cols-12 gap-10">
-
-            <div className="md:col-span-4 space-y-4">
-              <Link href="/" className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#1A5C48] flex items-center justify-center">
-                  <img src="/loger.png" alt="Tuloong Logo" className="w-5 h-5 object-contain" />
-                </div>
-                <span className="font-extrabold text-lg text-neutral-900" style={{ fontFamily: "var(--font-heading)" }}>Tuloong</span>
-              </Link>
-              <p className="text-neutral-400 text-xs leading-relaxed max-w-[280px]">
-                Reverse marketplace untuk segala jenis jasa suruh-suruh. Adil, aman, dan memprioritaskan kesejahteraan pekerja lokal.
-              </p>
-            </div>
-
-            <div className="md:col-span-2">
-              <h4 className="font-bold text-neutral-800 text-xs uppercase tracking-wider mb-4">Layanan</h4>
-              <ul className="space-y-2">
-                {["Kebersihan", "Pertukangan", "Kurir", "Kebun", "Custom Jasa"].map((item) => (
-                  <li key={item}>
-                    <Link href="#" className="text-xs text-neutral-400 hover:text-[#1A5C48] transition-colors">{item}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="md:col-span-3">
-              <h4 className="font-bold text-neutral-800 text-xs uppercase tracking-wider mb-4">Tautan</h4>
-              <ul className="space-y-2">
-                {["Tentang Kami", "Syarat & Ketentuan", "Kebijakan Privasi", "Hubungi Kami"].map((item) => (
-                  <li key={item}>
-                    <Link href="#" className="text-xs text-neutral-400 hover:text-[#1A5C48] transition-colors">{item}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="md:col-span-3">
-              <h4 className="font-bold text-neutral-800 text-xs uppercase tracking-wider mb-4">Lokasi Aktif</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                DKI Jakarta, Bandung, Surabaya, Yogyakarta, dan Semarang. Segera hadir di kota-kota besar lainnya!
-              </p>
-            </div>
-
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-neutral-300 text-xs">
-              © {new Date().getFullYear()} Tuloong. Hak cipta dilindungi.
-            </p>
-            <div className="flex gap-6">
-              <Link href="#" className="text-xs text-neutral-300 hover:text-neutral-500 transition-colors">Privasi</Link>
-              <Link href="#" className="text-xs text-neutral-300 hover:text-neutral-500 transition-colors">Syarat Penggunaan</Link>
-            </div>
+      <footer className="bg-white border-t border-neutral-100 py-8 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-neutral-400 text-xs">
+            © {new Date().getFullYear()} Tuloong. Hak cipta dilindungi.
+          </p>
+          <div className="flex gap-6">
+            <Link href="/kebijakan-privasi" className="text-xs text-neutral-400 hover:text-neutral-600 transition-colors">Privasi</Link>
+            <Link href="/syarat-ketentuan" className="text-xs text-neutral-400 hover:text-neutral-600 transition-colors">Syarat Penggunaan</Link>
           </div>
         </div>
       </footer>

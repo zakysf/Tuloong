@@ -262,11 +262,13 @@ export default function DetailPostinganPage() {
               </div>
 
               <div className="space-y-3">
-                <Link href={`/chat/${post.claim.id}`} className="block">
-                  <Button variant="outline" className="w-full justify-center gap-2">
-                    <MessageCircle size={16} /> Chat Mitra
-                  </Button>
-                </Link>
+                {post.status !== 'done' && post.status !== 'cancelled' && (
+                  <Link href={`/chat/${post.claim.id}`} className="block">
+                    <Button variant="outline" className="w-full justify-center gap-2">
+                      <MessageCircle size={16} /> Chat Mitra
+                    </Button>
+                  </Link>
+                )}
                 
                 {post.status === 'in_progress' && post.claim?.status === 'done_by_mitra' && (
                   <Button 
@@ -289,13 +291,15 @@ export default function DetailPostinganPage() {
                   </Button>
                 )}
 
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-center gap-2 text-xs text-gray-500 hover:text-red-600"
-                  onClick={() => setShowReport(true)}
-                >
-                  <AlertTriangle size={14} /> Lapor Masalah
-                </Button>
+                {post.status !== 'done' && post.status !== 'cancelled' && (
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-center gap-2 text-xs text-gray-500 hover:text-red-600"
+                    onClick={() => setShowReport(true)}
+                  >
+                    <AlertTriangle size={14} /> Lapor Masalah
+                  </Button>
+                )}
               </div>
             </div>
           )}

@@ -50,6 +50,11 @@ export type UserStatus = "aktif" | "nonaktif";
 // Field naming mengikuti BE (Laravel — Bahasa Indonesia)
 
 export interface MitraProfile {
+  nomor_ktp?: string;
+  foto_ktp?: string;
+  nama_bank?: string;
+  nomor_rekening?: string;
+  nama_pemilik_rekening?: string;
   verification_status: MitraVerificationStatus;
   badge: MitraBadge;
   deskripsi_keahlian: string;

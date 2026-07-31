@@ -53,8 +53,8 @@ export default function RiwayatTransaksiPage() {
                       timeStyle: "short",
                     })}
                   </p>
-                  <p className="font-semibold text-gray-900 mb-1">
-                    Pembayaran Jasa (ID: {t.id})
+                  <p className="font-semibold text-gray-900 mb-1 line-clamp-1">
+                    {t.post?.judul || `Pembayaran Jasa (ID: ${t.id})`}
                   </p>
                   <p className="text-sm text-gray-500">
                     Jumlah: <span className="font-medium text-gray-900">Rp {t.amount.toLocaleString("id-ID")}</span>

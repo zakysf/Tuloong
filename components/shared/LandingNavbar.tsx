@@ -1,7 +1,50 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function LandingNavbar() {
+  const [activeSection, setActiveSection] = useState("");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const handleScroll = () => {
+      // Get the scroll position plus a little offset for when the header is sticky
+      const scrollPos = window.scrollY + 100;
+      
+      const sections = [
+        { id: "keamanan", element: document.getElementById("keamanan") },
+        { id: "mitra", element: document.getElementById("mitra") },
+        { id: "cara-kerja", element: document.getElementById("cara-kerja") },
+      ];
+
+      // Sort sections by their position from top to bottom
+      const validSections = sections
+        .filter((s) => s.element !== null)
+        .map((s) => ({ id: s.id, offsetTop: s.element!.offsetTop }))
+        .sort((a, b) => b.offsetTop - a.offsetTop);
+
+      let current = "";
+      for (const section of validSections) {
+        if (scrollPos >= section.offsetTop) {
+          current = section.id;
+          break;
+        }
+      }
+      
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-6 pt-5">
@@ -12,11 +55,33 @@ export default function LandingNavbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            {["Beranda", "Cara Kerja", "Mitra", "Keamanan"].map((l, i) => (
-              <Link key={l} href={i === 0 ? "/" : `/#${l.toLowerCase().replace(" ", "-")}`} className={`text-[13px] font-medium ${i === 0 ? "text-neutral-900" : "text-neutral-400 hover:text-neutral-900"} transition-colors`}>
-                {l}
-              </Link>
-            ))}
+            {["Beranda", "Cara Kerja", "Mitra", "Keamanan"].map((l) => {
+              const id = l.toLowerCase().replace(" ", "-");
+              const isBeranda = l === "Beranda";
+              
+              let isActive = false;
+              if (pathname === "/") {
+                if (isBeranda && activeSection === "") isActive = true;
+                if (!isBeranda && activeSection === id) isActive = true;
+              } else if (isBeranda) {
+                // If on another page, no section is active, Beranda might just act as home link
+                isActive = false;
+              }
+
+              return (
+                <Link 
+                  key={l} 
+                  href={isBeranda ? "/" : `/#${id}`} 
+                  className={`text-[13px] font-medium transition-all ${
+                    isActive 
+                      ? "text-[#1A5C48] font-bold scale-105" 
+                      : "text-neutral-400 hover:text-neutral-900"
+                  }`}
+                >
+                  {l}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-3">

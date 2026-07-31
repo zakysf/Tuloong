@@ -122,11 +122,13 @@ export default function JobSayaPage() {
                       </div>
                       
                       <div className="ml-4 pl-4 border-l border-gray-200">
-                        <Link href={`/chat/${claim.id}`}>
-                          <Button variant="ghost" size="sm" className="h-8 text-teal-700 hover:text-teal-800 hover:bg-teal-50">
-                            <MessageCircle size={16} className="mr-2" /> Chat
-                          </Button>
-                        </Link>
+                        {claim.post.status !== 'done' && claim.post.status !== 'cancelled' && (
+                          <Link href={`/chat/${claim.id}`}>
+                            <Button variant="ghost" size="sm" className="h-8 text-teal-700 hover:text-teal-800 hover:bg-teal-50">
+                              <MessageCircle size={16} className="mr-2" /> Chat
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>

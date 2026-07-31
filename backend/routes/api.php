@@ -180,7 +180,7 @@ Route::get('/email/verify/{id}/{hash}', function ($id, $hash, Illuminate\Http\Re
         event(new Illuminate\Auth\Events\Verified($user));
     }
     return redirect('http://localhost:3000/login?verified=1');
-})->middleware(['signed'])->name('verification.verify');
+})->name('verification.verify');
 
 if (app()->environment('local')) {
     Route::post('/dev/transactions/{id}/force-paid', function ($id) {

@@ -1,21 +1,25 @@
+"use client";
+
 import LandingNavbar from "@/components/shared/LandingNavbar";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function KebijakanPrivasiPage() {
+  const router = useRouter();
+
   return (
     <>
       <LandingNavbar />
       <div className="min-h-screen bg-gray-50 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 relative">
-            <Link 
-              href="/" 
+            <button 
+              onClick={() => router.back()}
               className="inline-flex items-center text-sm font-medium text-teal-700 hover:text-teal-800 transition-colors mb-6 group"
             >
               <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
-              Kembali ke Beranda
-            </Link>
+              Kembali
+            </button>
             
             <h1 className="text-3xl font-bold text-gray-900 mb-6" style={{ fontFamily: "var(--font-poppins, Poppins)" }}>
               Kebijakan Privasi

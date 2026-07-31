@@ -51,14 +51,7 @@ export default function MitraPendingPage() {
               bg: "#FEF3C7",
               label: "Verifikasi KTP sedang diproses",
               sub: "Tim kami sedang memeriksa dokumen identitasmu.",
-            },
-            {
-              icon: Mail,
-              color: "#6B7280",
-              bg: "#F3F4F6",
-              label: "Notifikasi akan dikirim",
-              sub: "Kamu akan dihubungi melalui WhatsApp / email.",
-            },
+            }
           ].map(({ icon: Icon, color, bg, label, sub }) => (
             <div
               key={label}
