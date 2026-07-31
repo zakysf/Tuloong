@@ -9,7 +9,7 @@ Tuloong adalah platform web jasa suruh yang menghubungkan pelanggan dengan mitra
 
 Platform ini **sepenuhnya gratis tanpa komisi**. Pendapatan bersifat sukarela melalui fitur donasi. Fokus utama adalah pemberdayaan pekerja lokal Indonesia.
 
-**Tagline:** *"Tuloong — Butuh Bantuan? Tinggal Post."*
+**Tagline:** *"Tuloong — Butuh Bantuan? Minta Tuloong aja."*
 
 ---
 
