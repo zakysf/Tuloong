@@ -47,9 +47,31 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired / unauthenticated — clear token & redirect to login
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Coba ulang 1x jika dapat 401 (mitigasi bug PHP built-in server di Windows yang drop header saat concurrent)
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const token = getToken();
+      if (token) {
+        originalRequest.headers["Authorization"] = `Bearer ${token}`;
+      }
+      try {
+        // Tunggu 500ms sebelum retry agar PHP built-in server punya waktu luang
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return await axios(originalRequest); // gunakan axios murni agar tidak loop interceptor
+      } catch (retryError: any) {
+        if (retryError.response?.status === 401) {
+          clearToken();
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
+        }
+        return Promise.reject(retryError);
+      }
+    } else if (error.response?.status === 401) {
+      // Jika retry gagal atau sudah retry, baru logout
       clearToken();
       if (typeof window !== "undefined") {
         window.location.href = "/login";

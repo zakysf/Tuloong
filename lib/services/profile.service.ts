@@ -91,3 +91,46 @@ export async function requestProfileUpdate(
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
+
+// ─── Mitra Revisions ─────────────────────────────────────────────────────────
+
+export interface RejectionReasonResponse {
+  id: number;
+  user_id: number;
+  reason: string;
+  created_at: string;
+}
+
+export async function getRejectionReason(): Promise<RejectionReasonResponse | null> {
+  try {
+    const { data } = await api.get<{ data: RejectionReasonResponse }>("/api/mitra/rejection");
+    return data.data;
+  } catch (error) {
+    return null;
+  }
+}
+
+export interface ReviseMitraProfilePayload {
+  nomor_ktp?: string;
+  deskripsi_keahlian?: string;
+  foto_ktp?: File;
+}
+
+export async function reviseMitraProfile(
+  payload: ReviseMitraProfilePayload
+): Promise<User> {
+  const formData = new FormData();
+  (Object.keys(payload) as Array<keyof ReviseMitraProfilePayload>).forEach(
+    (key) => {
+      const value = payload[key];
+      if (value !== undefined && value !== null) {
+        formData.append(key, value as string | Blob);
+      }
+    }
+  );
+  
+  const { data } = await api.post<BEResponse<User>>("/api/mitra/revise", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data.data;
+}

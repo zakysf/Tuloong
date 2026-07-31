@@ -17,13 +17,6 @@ use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
-    protected CloudinaryService $cloudinaryService;
-
-    public function __construct(CloudinaryService $cloudinaryService)
-    {
-        $this->cloudinaryService = $cloudinaryService;
-    }
-
     /**
      * Register pelanggan atau mitra.
      * Deteksi role dari request body.
@@ -80,9 +73,11 @@ class AuthController extends Controller
      */
     private function registerMitra(RegisterMitraRequest $request): JsonResponse
     {
-        $user = DB::transaction(function () use ($request) {
+        $cloudinaryService = app(CloudinaryService::class);
+
+        $user = DB::transaction(function () use ($request, $cloudinaryService) {
             // Upload foto KTP ke Cloudinary
-            $fotoKtpUrl = $this->cloudinaryService->upload(
+            $fotoKtpUrl = $cloudinaryService->upload(
                 $request->file('foto_ktp'),
                 'tuloong/ktp'
             );
@@ -161,8 +156,19 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Hapus token lama, buat baru
-        $user->tokens()->delete();
+        // Cek verifikasi mitra
+        if ($user->role === 'mitra') {
+            $user->load('mitraProfile');
+            if ($user->mitraProfile && $user->mitraProfile->verification_status !== 'aktif') {
+                Auth::logout();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun Mitra Anda sedang menunggu verifikasi oleh Admin.',
+                ], 403);
+            }
+        }
+
+        // Buat token baru
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Load profile sesuai role

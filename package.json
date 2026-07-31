@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:backend": "cd backend && php artisan serve",
+    "dev:backend": "cd backend/public && php -S 127.0.0.1:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php",
     "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev\"",
     "build": "next build",
     "start": "next start"

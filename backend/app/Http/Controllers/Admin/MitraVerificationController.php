@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MitraRejectedMail;
 
 class MitraVerificationController extends Controller
 {
@@ -86,6 +88,9 @@ class MitraVerificationController extends Controller
                     'user_id' => $user->id,
                     'reason'  => $request->reason,
                 ]);
+
+                // Kirim email penolakan
+                Mail::to($user->email)->send(new MitraRejectedMail($user, $request->reason));
             }
         });
 

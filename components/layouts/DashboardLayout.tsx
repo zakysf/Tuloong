@@ -66,13 +66,21 @@ export default function DashboardLayout({
       { name: "Profil", href: "/pelanggan/profil", icon: <UserCircle size={20} /> },
     ];
   } else if (role === "mitra") {
-    navItems = [
-      { name: "Dashboard", href: "/mitra", icon: <LayoutDashboard size={20} /> },
-      { name: "Cari Job", href: "/mitra/jobs", icon: <Search size={20} /> },
-      { name: "Job Saya", href: "/mitra/my-jobs", icon: <Briefcase size={20} /> },
-      { name: "Riwayat Transaksi", href: "/mitra/transaksi", icon: <History size={20} /> },
-      { name: "Profil", href: "/mitra/profil", icon: <UserCircle size={20} /> },
-    ];
+    const isMitraActive = user?.mitra_profile?.verification_status === 'aktif';
+    if (!isMitraActive) {
+      navItems = [
+        { name: "Status Pendaftaran", href: "/mitra", icon: <LayoutDashboard size={20} /> },
+        { name: "Profil", href: "/mitra/profil", icon: <UserCircle size={20} /> },
+      ];
+    } else {
+      navItems = [
+        { name: "Dashboard", href: "/mitra", icon: <LayoutDashboard size={20} /> },
+        { name: "Cari Job", href: "/mitra/jobs", icon: <Search size={20} /> },
+        { name: "Job Saya", href: "/mitra/my-jobs", icon: <Briefcase size={20} /> },
+        { name: "Riwayat Transaksi", href: "/mitra/transaksi", icon: <History size={20} /> },
+        { name: "Profil", href: "/mitra/profil", icon: <UserCircle size={20} /> },
+      ];
+    }
   } else if (role === "admin") {
     navItems = [
       { name: "Dashboard", href: "/admin", icon: <LayoutDashboard size={20} /> },
@@ -101,9 +109,7 @@ export default function DashboardLayout({
       >
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-teal-800">
-              <span className="font-bold text-white text-sm">T</span>
-            </div>
+            <img src="/loger.png" alt="Tuloong Logo" className="w-8 h-8 object-contain" />
             <span className="font-bold text-lg text-teal-800">Tuloong</span>
           </Link>
           <button

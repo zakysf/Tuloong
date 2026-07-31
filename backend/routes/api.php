@@ -14,6 +14,7 @@ use App\Http\Controllers\Pelanggan\PostController;
 use App\Http\Controllers\Pelanggan\TransactionController;
 use App\Http\Controllers\Mitra\JobController;
 use App\Http\Controllers\Mitra\ClaimController;
+use App\Http\Controllers\Mitra\ProfileController as MitraProfileController;
 use App\Http\Controllers\Shared\ChatController;
 use App\Http\Controllers\Shared\ReviewController;
 use App\Http\Controllers\Shared\ReportController;
@@ -126,6 +127,12 @@ Route::middleware(['auth:sanctum', 'role:pelanggan'])->group(function () {
 // =====================================================
 // MITRA ROUTES (role: mitra + mitra aktif/terverifikasi)
 // =====================================================
+Route::middleware(['auth:sanctum', 'role:mitra'])->group(function () {
+    // Profil / Revisi
+    Route::get('/mitra/rejection', [MitraProfileController::class, 'getRejectionReason']);
+    Route::post('/mitra/revise', [MitraProfileController::class, 'reviseProfile']);
+});
+
 Route::middleware(['auth:sanctum', 'role:mitra', 'mitra.active'])->group(function () {
     // Browse jobs
     Route::get('/mitra/jobs', [ClaimController::class, 'myJobs']);

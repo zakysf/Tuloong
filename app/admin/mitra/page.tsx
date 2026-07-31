@@ -54,7 +54,7 @@ export default function AdminVerifikasiMitraPage() {
 
   const filteredMitras = mitras.filter(m => 
     m.nama.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    m.mitra_profile.nomor_ktp.includes(searchTerm)
+    m.mitra_profile?.nomor_ktp?.includes(searchTerm)
   );
 
   return (
@@ -116,11 +116,11 @@ export default function AdminVerifikasiMitraPage() {
                       <p className="text-xs text-gray-500">{mitra.email}</p>
                     </td>
                     <td className="py-4 px-4">
-                      <p className="text-sm text-gray-900">{mitra.mitra_profile.kabupaten}</p>
-                      <p className="text-xs text-gray-500">{mitra.mitra_profile.provinsi}</p>
+                      <p className="text-sm text-gray-900">{mitra.mitra_profile?.kabupaten || '-'}</p>
+                      <p className="text-xs text-gray-500">{mitra.mitra_profile?.provinsi || '-'}</p>
                     </td>
                     <td className="py-4 px-4 text-sm text-gray-600">
-                      {new Date(mitra.mitra_profile.created_at).toLocaleDateString("id-ID")}
+                      {mitra.mitra_profile?.created_at ? new Date(mitra.mitra_profile.created_at).toLocaleDateString("id-ID") : '-'}
                     </td>
                     <td className="py-4 px-4 text-right">
                       <Button variant="outline" size="sm" onClick={() => setSelectedMitra(mitra)}>
@@ -158,18 +158,18 @@ export default function AdminVerifikasiMitraPage() {
                   
                   <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-3">Informasi Bank</h3>
                   <div className="space-y-2">
-                    <p className="text-sm"><span className="text-gray-500 w-24 inline-block">Bank</span> : <span className="font-medium">{selectedMitra.mitra_profile.nama_bank}</span></p>
-                    <p className="text-sm"><span className="text-gray-500 w-24 inline-block">No Rek</span> : <span className="font-medium">{selectedMitra.mitra_profile.nomor_rekening}</span></p>
-                    <p className="text-sm"><span className="text-gray-500 w-24 inline-block">A.n</span> : <span className="font-medium">{selectedMitra.mitra_profile.nama_pemilik_rekening}</span></p>
+                    <p className="text-sm"><span className="text-gray-500 w-24 inline-block">Bank</span> : <span className="font-medium">{selectedMitra.mitra_profile?.nama_bank || '-'}</span></p>
+                    <p className="text-sm"><span className="text-gray-500 w-24 inline-block">No Rek</span> : <span className="font-medium">{selectedMitra.mitra_profile?.nomor_rekening || '-'}</span></p>
+                    <p className="text-sm"><span className="text-gray-500 w-24 inline-block">A.n</span> : <span className="font-medium">{selectedMitra.mitra_profile?.nama_pemilik_rekening || '-'}</span></p>
                   </div>
                 </div>
                 
                 <div>
                   <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Dokumen KTP</h3>
-                  <p className="text-sm mb-2"><span className="text-gray-500">NIK</span> : <span className="font-medium">{selectedMitra.mitra_profile.nomor_ktp}</span></p>
+                  <p className="text-sm mb-2"><span className="text-gray-500">NIK</span> : <span className="font-medium">{selectedMitra.mitra_profile?.nomor_ktp || '-'}</span></p>
                   <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                    <a href={selectedMitra.mitra_profile.foto_ktp} target="_blank" rel="noopener noreferrer">
-                      <img src={selectedMitra.mitra_profile.foto_ktp} className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer" alt="KTP" />
+                    <a href={selectedMitra.mitra_profile?.foto_ktp} target="_blank" rel="noopener noreferrer">
+                      <img src={selectedMitra.mitra_profile?.foto_ktp} className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer" alt="KTP" />
                     </a>
                   </div>
                   <p className="text-xs text-gray-400 mt-1 text-center">Klik gambar untuk memperbesar</p>
@@ -179,11 +179,11 @@ export default function AdminVerifikasiMitraPage() {
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Deskripsi Keahlian</h3>
                 <p className="text-sm text-gray-700 bg-gray-50 p-4 rounded-xl leading-relaxed">
-                  {selectedMitra.mitra_profile.deskripsi_keahlian}
+                  {selectedMitra.mitra_profile?.deskripsi_keahlian || 'Tidak ada deskripsi'}
                 </p>
               </div>
 
-              {selectedMitra.mitra_profile.verification_status === "pending" && (
+              {selectedMitra.mitra_profile?.verification_status === "pending" && (
                 <div className="pt-6 border-t border-gray-100">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Alasan Penolakan (Hanya jika menolak)</label>
                   <textarea
@@ -196,7 +196,7 @@ export default function AdminVerifikasiMitraPage() {
               )}
             </div>
 
-            {selectedMitra.mitra_profile.verification_status === "pending" && (
+            {selectedMitra.mitra_profile?.verification_status === "pending" && (
               <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
                 <Button 
                   variant="outline"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -12,57 +12,7 @@ import DonationWidget from "@/components/shared/DonationWidget";
 import LandingNavbar from "@/components/shared/LandingNavbar";
 import { Button } from "@/components/ui/button";
 
-/* ─── Tipe Data Simulasi ──────────────────────────────────────── */
-interface MockRequest {
-  id: number;
-  task: string;
-  category: string;
-  budget: number;
-  time: string;
-  status: "matching" | "bids_received" | "hired" | "completed";
-  bidsCount: number;
-}
 
-interface MockMitraBid {
-  name: string;
-  role: string;
-  rating: number;
-  bidPrice: number;
-  message: string;
-  time: string;
-}
-
-const INITIAL_REQUESTS: MockRequest[] = [
-  { id: 1, task: "Bantu angkat lemari kayu ke lantai 2", category: "Pertukangan", budget: 60000, time: "2 mnt lalu", status: "bids_received", bidsCount: 4 },
-  { id: 2, task: "Bersihkan sisa banjir di garasi", category: "Kebersihan", budget: 85000, time: "5 mnt lalu", status: "hired", bidsCount: 3 },
-  { id: 3, task: "Beli & antar obat asma dari Apotek Kimia Farma", category: "Kurir", budget: 25000, time: "10 mnt lalu", status: "completed", bidsCount: 2 },
-  { id: 4, task: "Potong dahan pohon mangga rimbun", category: "Kebun", budget: 50000, time: "15 mnt lalu", status: "bids_received", bidsCount: 3 },
-];
-
-const NEW_REQUEST_POOL: Omit<MockRequest, "id">[] = [
-  { task: "Beli martabak manis & kirim ke Jalan Dago", category: "Kurir", budget: 20000, time: "Baru saja", status: "matching", bidsCount: 0 },
-  { task: "Pasang kabel internet & rapikan colokan", category: "Pertukangan", budget: 45000, time: "Baru saja", status: "matching", bidsCount: 0 },
-  { task: "Sapu & pel seluruh rumah tipe 36", category: "Kebersihan", budget: 70000, time: "Baru saja", status: "matching", bidsCount: 0 },
-  { task: "Bantu belanja sayur mingguan di pasar", category: "Belanja", budget: 35000, time: "Baru saja", status: "matching", bidsCount: 0 },
-];
-
-const DEMO_MITRA_OPTIONS: Record<string, MockMitraBid[]> = {
-  Kebersihan: [
-    { name: "Siti Aminah", role: "Cleaning Specialist", rating: 4.9, bidPrice: 65000, message: "Peralatan lengkap dari saya. Siap datang 15 menit lagi!", time: "1 mnt lalu" },
-    { name: "Budi Santoso", role: "Home Cleaner", rating: 4.7, bidPrice: 70000, message: "Biasa ngerapihin kosan & rumah. Dijamin wangi dan kinclong.", time: "Baru saja" }
-  ],
-  Pertukangan: [
-    { name: "Hendra Wijaya", role: "Handyman Profesional", rating: 4.8, bidPrice: 40000, message: "Bawa toolkit lengkap. Biasa benerin listrik dan pompa air.", time: "2 mnt lalu" },
-    { name: "Joko Susilo", role: "Spesialis AC & Listrik", rating: 4.9, bidPrice: 45000, message: "Siap bantu beresin kabel atau colokan. Pekerjaan bergaransi.", time: "Baru saja" }
-  ],
-  Kurir: [
-    { name: "Rian Hidayat", role: "Kurir Motor Cepat", rating: 4.9, bidPrice: 18000, message: "Posisi dekat lokasi apotek. Langsung jalan begitu dicall.", time: "Baru saja" },
-    { name: "Adi Saputra", role: "Kurir Sameday", rating: 4.6, bidPrice: 20000, message: "Siap meluncur, motor ada box pelindung biar belanjaan aman.", time: "Baru saja" }
-  ],
-  Default: [
-    { name: "Agus Pratama", role: "Mitra Serbabisa", rating: 4.8, bidPrice: 30000, message: "Siap bantu apa saja kebutuhan Anda. Fast response.", time: "Baru saja" }
-  ]
-};
 
 const SERVICES = [
   { title: "Kebersihan", desc: "Sapu, pel, beresin kamar mandi, hingga bersih-bersih rumah total.", icon: Sparkles, tag: "Paling Laris" },
@@ -74,64 +24,7 @@ const SERVICES = [
 ];
 
 export default function LandingClient() {
-  // Live Request Ticker State
-  const [requests, setRequests] = useState<MockRequest[]>(INITIAL_REQUESTS);
-  const nextId = useRef(5);
-  const poolIndex = useRef(0);
 
-  // Bidding Simulator State
-  const [simCategory, setSimCategory] = useState<string>("Kebersihan");
-  const [simBudget, setSimBudget] = useState<number>(75000);
-  const [simState, setSimState] = useState<"idle" | "searching" | "showing_bids">("idle");
-  const [simBids, setSimBids] = useState<MockMitraBid[]>([]);
-
-  // Ticker Effect (Simulates real-time posts from users)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const template = NEW_REQUEST_POOL[poolIndex.current];
-      const newReq: MockRequest = {
-        ...template,
-        id: nextId.current,
-        budget: template.budget + (Math.random() > 0.5 ? 5000 : -5000),
-      };
-
-      setRequests(prev => [newReq, ...prev.slice(0, 3)]);
-
-      // Update internal counters
-      nextId.current += 1;
-      poolIndex.current = (poolIndex.current + 1) % NEW_REQUEST_POOL.length;
-
-      // Randomly change statuses of older requests after a delay to simulate action
-      setTimeout(() => {
-        setRequests(current =>
-          current.map(r =>
-            r.id === newReq.id
-              ? { ...r, status: "bids_received", bidsCount: Math.floor(Math.random() * 3) + 1 }
-              : r
-          )
-        );
-      }, 2000);
-
-    }, 6000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Run Simulation Handler
-  const startSimulation = () => {
-    setSimState("searching");
-    setSimBids([]);
-    setTimeout(() => {
-      const bids = DEMO_MITRA_OPTIONS[simCategory] || DEMO_MITRA_OPTIONS.Default;
-      // Adjust prices slightly based on input budget
-      const adjustedBids = bids.map(bid => ({
-        ...bid,
-        bidPrice: Math.round((simBudget * (0.85 + Math.random() * 0.2)) / 1000) * 1000
-      }));
-      setSimBids(adjustedBids);
-      setSimState("showing_bids");
-    }, 1800);
-  };
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-neutral-900 antialiased selection:bg-[#F2632A]/10 selection:text-[#F2632A]">
@@ -150,7 +43,7 @@ export default function LandingClient() {
 
         <div className="grid lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Creative Title & Intro */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
+          <div className="lg:col-span-12 flex flex-col justify-center max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-100 bg-white text-xs font-semibold text-neutral-500 mb-6 shadow-sm w-fit">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               Beda dari yang lain: Anda yang tentukan budget jasanya
@@ -200,90 +93,7 @@ export default function LandingClient() {
             </div>
           </div>
 
-          {/* Right Column: Live Request Board Widget */}
-          <div className="lg:col-span-5 relative">
-            <div className="bg-white rounded-3xl border border-neutral-200/70 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)] relative overflow-hidden">
-              <div className="flex items-center justify-between mb-5 border-b border-neutral-100 pb-4">
-                <div>
-                  <h3 className="font-extrabold text-neutral-950 text-base">Papan Tugas Aktif</h3>
-                  <p className="text-xs text-neutral-400">Simulasi postingan pelanggan secara real-time</p>
-                </div>
-                <div className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-bold tracking-wider uppercase animate-pulse">
-                  Live Ticker
-                </div>
-              </div>
 
-              {/* Request List */}
-              <div className="space-y-3.5 min-h-[300px]">
-                {requests.map((req) => (
-                  <div
-                    key={req.id}
-                    className="p-4 rounded-2xl border border-neutral-100/80 bg-neutral-50/50 hover:bg-neutral-50 transition-all duration-300 transform translate-y-0"
-                  >
-                    <div className="flex justify-between items-start gap-3">
-                      <span className="text-[10px] font-bold bg-white px-2 py-0.5 rounded-md border border-neutral-200 text-neutral-500 uppercase tracking-wide">
-                        {req.category}
-                      </span>
-                      <span className="text-[11px] text-neutral-400 flex items-center gap-1">
-                        <Clock size={12} />
-                        {req.time}
-                      </span>
-                    </div>
-
-                    <p className="text-neutral-800 text-sm font-semibold mt-2 leading-snug">
-                      {req.task}
-                    </p>
-
-                    <div className="mt-3.5 flex items-center justify-between border-t border-neutral-100/50 pt-2.5">
-                      <div>
-                        <span className="text-[10px] text-neutral-400 block uppercase tracking-wider">Budget</span>
-                        <span className="text-sm font-bold text-[#F2632A]">
-                          Rp {req.budget.toLocaleString("id-ID")}
-                        </span>
-                      </div>
-
-                      <div className="text-right">
-                        {req.status === "matching" && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
-                            Mencari Mitra
-                          </span>
-                        )}
-                        {req.status === "bids_received" && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-600 bg-sky-50 px-2 py-1 rounded-lg">
-                            {req.bidsCount} Bid Masuk
-                          </span>
-                        )}
-                        {req.status === "hired" && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
-                            Mitra Terpilih
-                          </span>
-                        )}
-                        {req.status === "completed" && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded-lg">
-                            <Check size={11} /> Selesai
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action Banner */}
-              <div className="mt-6 bg-[#1A5C48] rounded-2xl p-4 text-white flex items-center justify-between">
-                <div>
-                  <p className="text-xs opacity-75">Butuh bantuan secepatnya?</p>
-                  <p className="text-sm font-bold">Posting tugas Anda sekarang</p>
-                </div>
-                <Link href="/register">
-                  <button className="p-2.5 rounded-xl bg-white text-[#1A5C48] hover:bg-neutral-100 transition-colors">
-                    <ArrowRight size={16} />
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -602,9 +412,7 @@ export default function LandingClient() {
             <div className="md:col-span-4 space-y-4">
               <Link href="/" className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-[#1A5C48] flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2" /><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
-                  </svg>
+                  <img src="/loger.png" alt="Tuloong Logo" className="w-5 h-5 object-contain" />
                 </div>
                 <span className="font-extrabold text-lg text-neutral-900" style={{ fontFamily: "var(--font-heading)" }}>Tuloong</span>
               </Link>

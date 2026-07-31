@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, User, MapPin } from "lucide-react";
+import { toast } from "sonner";
 
 import LandingNavbar from "@/components/shared/LandingNavbar";
 import AuthSidebar from "@/components/shared/AuthSidebar";
@@ -91,7 +92,10 @@ export default function RegisterPelangganPage() {
         role: "pelanggan",
       });
       await refreshUser();
-      alert("Registrasi berhasil! Silakan cek kotak masuk email Anda untuk verifikasi.");
+      toast.success("Registrasi berhasil!", {
+        description: "Silakan cek kotak masuk email Anda untuk verifikasi.",
+        duration: 5000,
+      });
       router.push("/login");
     } catch (err) {
       const { message, fieldErrors: fe } = parseApiError(err);
@@ -114,11 +118,7 @@ export default function RegisterPelangganPage() {
           <div className="mb-6">
             {/* Mobile logo */}
             <div className="flex items-center gap-2 mb-5 md:hidden">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#1A5C48" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
-                </svg>
-              </div>
+              <img src="/loger.png" alt="Tuloong Logo" className="w-8 h-8 object-contain" />
               <span className="font-bold text-lg" style={{ fontFamily: "var(--font-poppins, Poppins)", color: "#1A5C48" }}>Tuloong</span>
             </div>
 
@@ -288,29 +288,7 @@ export default function RegisterPelangganPage() {
             </Button>
           </form>
 
-          {/* Divider + Google */}
-          <div className="mt-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 h-px bg-neutral-200" />
-              <span className="text-xs text-neutral-400">atau daftar dengan</span>
-              <div className="flex-1 h-px bg-neutral-200" />
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              disabled
-              title="Fitur belum tersedia"
-              className="w-full h-11 rounded-xl border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
-            >
-              <svg className="mr-2" width="18" height="18" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-              </svg>
-              Google
-            </Button>
-          </div>
+
         </div>
       </div>
       </div>
