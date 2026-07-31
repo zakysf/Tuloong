@@ -17,6 +17,7 @@ export default function LandingNavbar() {
       const scrollPos = window.scrollY + 100;
       
       const sections = [
+        { id: "donasi", element: document.getElementById("donasi") },
         { id: "keamanan", element: document.getElementById("keamanan") },
         { id: "mitra", element: document.getElementById("mitra") },
         { id: "cara-kerja", element: document.getElementById("cara-kerja") },
@@ -55,7 +56,7 @@ export default function LandingNavbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            {["Beranda", "Cara Kerja", "Mitra", "Keamanan"].map((l) => {
+            {["Beranda", "Cara Kerja", "Mitra", "Keamanan", "Donasi"].map((l) => {
               const id = l.toLowerCase().replace(" ", "-");
               const isBeranda = l === "Beranda";
               

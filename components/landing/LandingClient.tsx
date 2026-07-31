@@ -29,83 +29,92 @@ export default function LandingClient() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-neutral-900 antialiased selection:bg-[#F2632A]/10 selection:text-[#F2632A]">
 
-      {/* BACKGROUND PATTERN */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+      {/* ══ HERO & NAVBAR WRAPPER (WAVY BOTTOM) ════════════════════════════ */}
+      <div className="relative bg-[#1A5C48] pb-40 md:pb-64 overflow-hidden">
+        {/* BACKGROUND PATTERN */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      {/* NAVBAR */}
-      <LandingNavbar />
+        {/* NAVBAR */}
+        <LandingNavbar />
 
-      {/* ══ HERO SECTION ════════════════════════════════════════════════════ */}
-      <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto relative">
-        {/* Decorative ambient blobs */}
-        <div className="absolute top-20 right-10 w-96 h-96 bg-[#1A5C48]/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute top-60 left-10 w-80 h-80 bg-[#F2632A]/5 rounded-full blur-[90px] pointer-events-none" />
+        {/* ══ HERO SECTION ════════════════════════════════════════════════════ */}
+        <section className="pt-24 md:pt-32 pb-10 px-6 max-w-7xl mx-auto relative z-10 flex flex-col items-center text-center">
+          {/* Decorative ambient blobs */}
+          <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-[#F2632A]/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-40 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
-          {/* Left Column: Creative Title & Intro */}
-          <div className="lg:col-span-12 flex flex-col justify-center max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-100 bg-white text-xs font-semibold text-neutral-500 mb-6 shadow-sm w-fit">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="max-w-4xl w-full flex flex-col items-center justify-center relative z-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/10 backdrop-blur-md text-xs font-bold text-white mb-8 shadow-xl w-fit">
+              <span className="w-2 h-2 rounded-full bg-[#F2632A] animate-pulse" />
               Beda dari yang lain: Anda yang tentukan budget jasanya
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[0.95] text-neutral-950">
-              Butuh bantuan? <br />minta{" "}
-              <span className="bg-gradient-to-r from-[#F2632A] via-amber-600 to-[#1A5C48] bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] md:leading-[1.05] text-white">
+              Butuh bantuan? minta{" "}
+              <span className="bg-gradient-to-r from-[#F2632A] via-amber-400 to-emerald-300 bg-clip-text text-transparent relative inline-block pb-2">
                 Tuloong
-              </span> <br />
+              </span>{" "}
               aja.
             </h1>
 
-            <p className="text-neutral-500 text-lg md:text-xl mt-6 leading-relaxed max-w-xl">
+            <p className="text-emerald-50/80 text-lg md:text-xl mt-6 leading-relaxed max-w-2xl font-medium">
               Platform jasa dengan sistem terbalik (reverse marketplace). Cukup post tugas Anda, pasang tarif yang Anda mau, lalu pilih Mitra terbaik yang mengajukan penawaran.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link href="/register">
-                <Button className="h-13 px-8 rounded-2xl text-sm font-bold bg-[#1A5C48] hover:bg-[#124233] text-white shadow-lg shadow-emerald-950/20 transition-all hover:-translate-y-0.5 cursor-pointer">
+                <Button className="h-14 px-8 rounded-full text-sm font-semibold bg-[#F2632A] hover:bg-[#d9511d] text-white shadow-xl shadow-[#F2632A]/20 transition-all hover:-translate-y-1 cursor-pointer">
                   Mulai Pesan Jasa
-                  <ArrowRight size={16} className="ml-2" />
+                  <ArrowRight size={18} className="ml-2" />
                 </Button>
               </Link>
               <Link href="#cara-kerja">
-                <Button variant="ghost" className="h-13 px-6 rounded-2xl text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors">
+                <Button variant="ghost" className="h-14 px-6 rounded-full text-sm font-semibold text-white hover:bg-white/10 transition-colors">
                   Lihat Cara Kerja
                 </Button>
               </Link>
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="mt-14 border-t border-neutral-100 pt-8 grid grid-cols-3 gap-6 max-w-lg">
+            <div className="mt-16 border-t border-white/10 pt-8 grid grid-cols-3 gap-8 md:gap-16 max-w-2xl w-full">
               <div>
-                <p className="text-3xl font-extrabold text-[#1A5C48]" style={{ fontFamily: "var(--font-heading)" }}>12K+</p>
-                <p className="text-xs font-medium text-neutral-400 mt-1">Mitra Aktif</p>
+                <p className="text-3xl font-black text-white" style={{ fontFamily: "var(--font-heading)" }}>12K+</p>
+                <p className="text-xs font-bold text-emerald-200 mt-1 uppercase tracking-wider">Mitra Aktif</p>
               </div>
               <div>
-                <p className="text-3xl font-extrabold text-[#F2632A]" style={{ fontFamily: "var(--font-heading)" }}>50K+</p>
-                <p className="text-xs font-medium text-neutral-400 mt-1">Tugas Selesai</p>
+                <p className="text-3xl font-black text-[#F2632A]" style={{ fontFamily: "var(--font-heading)" }}>50K+</p>
+                <p className="text-xs font-bold text-emerald-200 mt-1 uppercase tracking-wider">Tugas Selesai</p>
               </div>
               <div>
-                <p className="text-3xl font-extrabold text-neutral-800" style={{ fontFamily: "var(--font-heading)" }}>4.9</p>
-                <p className="text-xs font-medium text-neutral-400 mt-1">Rating Rata-rata</p>
+                <p className="text-3xl font-black text-white" style={{ fontFamily: "var(--font-heading)" }}>4.9</p>
+                <p className="text-xs font-bold text-emerald-200 mt-1 uppercase tracking-wider">Rating</p>
               </div>
             </div>
           </div>
+        </section>
 
-
+        {/* Dynamic Multi-layered Wave Divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] pointer-events-none">
+          <svg className="relative block w-full h-[80px] md:h-[180px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V120H0Z" className="fill-[#FDFDFD]" opacity=".25"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-23.44V120H0Z" className="fill-[#FDFDFD]" opacity=".5"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V120H0Z" className="fill-[#FDFDFD]"></path>
+          </svg>
         </div>
-      </section>
+      </div>
 
       {/* ══ CORE VALUE PROPOSITIONS ═════════════════════════════════════════ */}
       <section id="cara-kerja" className="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
         <div className="text-center max-w-xl mx-auto mb-16">
-          <p className="text-xs font-bold text-[#1A5C48] tracking-widest uppercase mb-2">3 Langkah Cepat</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-neutral-900 tracking-tight leading-tight">
+          <span className="text-xs font-semibold text-[#F2632A] tracking-[0.2em] uppercase mb-4 block">
+            3 Langkah Cepat
+          </span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-neutral-950 tracking-tight leading-tight">
             Bagaimana Tuloong Bekerja?
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 md:gap-6 lg:gap-8 items-start">
           {[
             {
               n: "01",
@@ -128,12 +137,13 @@ export default function LandingClient() {
               icon: CheckCircle2,
               color: "text-amber-600 bg-amber-50"
             }
-          ].map((step) => {
+          ].map((step, idx) => {
             const Icon = step.icon;
+            const isMiddle = idx === 1;
             return (
               <div
                 key={step.n}
-                className="bg-white rounded-3xl border border-neutral-200/60 p-8 hover:shadow-lg transition-all duration-300"
+                className={`bg-white rounded-[2.5rem] p-8 shadow-[0_10px_40px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 ${isMiddle ? 'md:mt-16' : ''}`}
               >
                 <div className="flex justify-between items-start">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${step.color}`}>
@@ -175,220 +185,170 @@ export default function LandingClient() {
             return (
               <div
                 key={s.title}
-                className="group bg-white rounded-3xl p-6 border border-neutral-200/60 hover:border-[#1A5C48]/30 transition-all duration-300 cursor-pointer hover:shadow-md"
+                className={`group bg-white rounded-[2rem] p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-neutral-100/50 hover:border-[#1A5C48]/20 flex flex-col justify-between`}
               >
-                <div className="flex items-start justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-neutral-50 group-hover:bg-[#1A5C48]/5 flex items-center justify-center text-neutral-500 group-hover:text-[#1A5C48] transition-all">
-                    <Icon size={20} />
+                <div>
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="w-14 h-14 rounded-[1.2rem] bg-neutral-50 group-hover:bg-[#1A5C48]/5 flex items-center justify-center text-neutral-400 group-hover:text-[#1A5C48] transition-all transform group-hover:scale-110 group-hover:rotate-[-5deg] duration-300">
+                      <Icon size={24} />
+                    </div>
+                    <span className="text-[10px] font-bold text-neutral-400 bg-neutral-100 group-hover:bg-[#F2632A]/10 group-hover:text-[#F2632A] px-3 py-1.5 rounded-full transition-all tracking-wider uppercase">
+                      {s.tag}
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold text-neutral-400 bg-neutral-100 group-hover:bg-amber-100 group-hover:text-amber-800 px-2 py-1 rounded-md transition-all">
-                    {s.tag}
-                  </span>
+                  <h3 className="text-xl font-black text-neutral-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
+                    {s.title}
+                  </h3>
+                  <p className="text-neutral-500 text-sm leading-relaxed">
+                    {s.desc}
+                  </p>
                 </div>
-                <h3 className="text-base font-bold text-neutral-950 mt-5 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
-                  {s.title}
-                </h3>
-                <p className="text-neutral-500 text-xs leading-relaxed">
-                  {s.desc}
-                </p>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* ══ MITRA CALL TO ACTION ════════════════════════════════════════════ */}
-      <section id="mitra" className="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
-        <div className="relative bg-[#1A5C48] rounded-[2.5rem] overflow-hidden border border-[#1A5C48]/20 shadow-2xl shadow-[#1A5C48]/20">
-          {/* Dynamic Background */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(242,99,42,0.25),transparent_50%)] pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -left-20 -bottom-20 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
+      {/* ══ MITRA CALL TO ACTION (MODERN MINIMALIST WITH CARDS) ════════════════ */}
+      <section id="mitra" className="py-32 px-6 max-w-7xl mx-auto scroll-mt-20 overflow-hidden">
+        <div className="grid lg:grid-cols-12 gap-16 lg:gap-12 items-center">
 
-          {/* Grid Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 p-10 md:p-16 lg:p-20">
-            {/* Left Content */}
-            <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md mb-8">
-                <span className="w-2 h-2 rounded-full bg-[#F2632A] animate-pulse" />
-                <span className="text-[11px] font-bold text-white tracking-widest uppercase">
-                  Peluang Penghasilan Baru
-                </span>
-              </div>
+          {/* Left Content */}
+          <div className="lg:col-span-5 flex flex-col justify-center">
+            <span className="text-xs font-semibold text-[#F2632A] tracking-[0.2em] uppercase mb-4 block">
+              Peluang Baru
+            </span>
 
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1]" style={{ fontFamily: "var(--font-heading)" }}>
-                Punya Keahlian? <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-white">Jadikan Penghasilan.</span>
-              </h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-neutral-950 tracking-tight leading-[1.1] mb-6">
+              Punya keahlian? <br />
+              <span className="text-[#1A5C48]">Jadikan penghasilan.</span>
+            </h2>
 
-              <p className="text-emerald-50/80 text-base md:text-lg mt-6 leading-relaxed font-medium">
-                Tuloong memberikan Anda kebebasan. Terima orderan jasa di sekitar Anda, tentukan sendiri jam kerja, dan bawa pulang 100% uang Anda tanpa potongan komisi yang mencekik.
-              </p>
+            <p className="text-neutral-500 text-lg md:text-xl leading-relaxed mb-10 max-w-lg">
+              Terima orderan jasa di sekitar Anda, atur jadwal kerja sesuka hati, dan simpan 100% uang Anda tanpa potongan komisi.
+            </p>
 
-              {/* Badges/Features */}
-              <div className="mt-10 grid grid-cols-2 gap-4">
-                {[
-                  { icon: DollarSign, text: "Cair Kapan Saja" },
-                  { icon: Clock, text: "Waktu Fleksibel" },
-                  { icon: Users, text: "Bebas Tawar Harga" },
-                  { icon: ShieldCheck, text: "Aman Terpercaya" },
-                ].map((item, i) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                        <Icon size={18} className="text-[#F2632A]" />
-                      </div>
-                      <span className="text-sm font-bold text-white">{item.text}</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-12 flex flex-wrap gap-4 items-center">
-                <Link href="/register/mitra">
-                  <Button className="h-14 px-8 rounded-2xl text-sm font-bold bg-[#F2632A] hover:bg-[#d9511d] text-white shadow-xl shadow-[#F2632A]/20 transition-all hover:-translate-y-1 cursor-pointer">
-                    Daftar Sebagai Mitra
-                    <ArrowUpRight size={18} className="ml-2" />
-                  </Button>
-                </Link>
-                <Link href="/login">
-                  <Button variant="ghost" className="h-14 px-6 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
-                    Sudah Punya Akun?
-                  </Button>
-                </Link>
-              </div>
+            <div className="flex flex-wrap gap-4 items-center">
+              <Link href="/register/mitra">
+                <Button className="h-14 px-8 rounded-full text-sm font-semibold bg-neutral-950 hover:bg-neutral-800 text-white transition-all">
+                  Daftar Sebagai Mitra
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="ghost" className="h-14 px-6 rounded-full text-sm font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors">
+                  Pelajari Lebih Lanjut
+                  <ArrowRight size={16} className="ml-2" />
+                </Button>
+              </Link>
             </div>
+          </div>
 
-            {/* Right Illustration/Image Area */}
-            <div className="relative hidden lg:block h-[500px]">
-              {/* Decorative elements behind image */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A5C48] via-transparent to-transparent z-10 rounded-[2.5rem]" />
-
-              {/* Floating Cards simulating UI */}
-              <div className="absolute top-10 -left-12 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_4s_infinite_ease-in-out]">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-                  <DollarSign size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Pendapatan Hari Ini</p>
-                  <p className="text-lg font-extrabold text-neutral-900">Rp 350.000</p>
-                </div>
-              </div>
-
-              <div className="absolute bottom-20 -right-8 z-20 bg-white p-4 rounded-2xl shadow-2xl border border-neutral-100/50 flex gap-4 items-center animate-[bounce_5s_infinite_ease-in-out_reverse]">
-                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
-                  <Star size={20} className="fill-amber-500" />
-                </div>
-                <div>
-                  <p className="text-[10px] text-neutral-400 font-bold uppercase">Rating Anda</p>
-                  <p className="text-lg font-extrabold text-neutral-900">4.9 / 5.0</p>
-                </div>
-              </div>
-
-              {/* The Image itself - assuming tuloong_hero_worker.png exists */}
-              <div className="absolute bottom-0 right-0 w-full h-[110%] flex items-end justify-center">
-                <Image
-                  src="/tuloong_hero_worker.png"
-                  alt="Mitra Tuloong"
-                  width={500}
-                  height={600}
-                  className="object-contain object-bottom w-[85%] h-auto relative z-0 drop-shadow-2xl filter contrast-105"
-                />
-              </div>
+          {/* Right Area (Staggered Grid Cards) */}
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+              {[
+                { icon: DollarSign, title: "Cair Kapan Saja", desc: "Tarik dana pendapatan instan tanpa tunggu lama.", color: "bg-emerald-50", textCol: "text-emerald-700" },
+                { icon: Clock, title: "Waktu Fleksibel", desc: "Atur jam kerja sendiri sesuai ketersediaan Anda.", color: "bg-amber-50", textCol: "text-amber-700" },
+                { icon: Users, title: "Bebas Menawar", desc: "Tentukan sendiri harga jasa dan negosiasi.", color: "bg-blue-50", textCol: "text-blue-700" },
+                { icon: ShieldCheck, title: "Aman Terpercaya", desc: "Sistem pengawasan memastikan transaksi aman.", color: "bg-purple-50", textCol: "text-purple-700" },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                // Offset the right column for a staggered masonry look on desktop
+                const isRightColumn = i % 2 !== 0;
+                return (
+                  <div
+                    key={i}
+                    className={`bg-white border border-neutral-100 p-6 md:p-8 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow group cursor-default ${isRightColumn ? 'sm:translate-y-8 lg:translate-y-12' : ''}`}
+                  >
+                    <div className={`w-12 h-12 rounded-2xl ${item.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
+                      <Icon size={20} className={item.textCol} />
+                    </div>
+                    <h3 className="text-lg font-bold text-neutral-900 mb-2">{item.title}</h3>
+                    <p className="text-neutral-500 leading-relaxed text-sm">
+                      {item.desc}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
 
-      {/* ══ WHY SECURITY & TRANSPARENCY MATTERS ════════════════════════════ */}
-      <section id="keamanan" className="py-24 px-6 bg-gradient-to-b from-white to-neutral-50 border-t border-neutral-100 scroll-mt-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
+      {/* ══ WHY SECURITY & TRANSPARENCY MATTERS (MODERN MINIMALIST) ════════════ */}
+      <section id="keamanan" className="py-32 px-6 max-w-7xl mx-auto scroll-mt-20">
+        <div className="grid lg:grid-cols-12 gap-16 lg:gap-24">
+          {/* Left Text Block */}
+          <div className="lg:col-span-5 flex flex-col justify-center">
+            <span className="text-xs font-semibold text-[#F2632A] tracking-[0.2em] uppercase mb-4 block">
+              Keamanan Terpadu
+            </span>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-neutral-950 tracking-tight leading-[1.15] mb-6">
+              Kepercayaan <br />
+              <span className="text-neutral-400">Prioritas Utama Kami.</span>
+            </h2>
+            <p className="text-neutral-500 text-lg leading-relaxed mb-8 max-w-md">
+              Tuloong menjamin kenyamanan Anda dalam bertransaksi maupun mempekerjakan Mitra lewat sistem pengawasan ganda yang terintegrasi.
+            </p>
 
-            <div className="lg:col-span-5 space-y-6">
-              <span className="text-xs font-bold text-[#1A5C48] tracking-widest uppercase bg-[#1A5C48]/5 px-3 py-1 rounded-full">
-                Keamanan & Integritas
-              </span>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-neutral-950 tracking-tight leading-tight">
-                Kepercayaan Adalah Prioritas Utama Kami
-              </h2>
-              <p className="text-neutral-500 text-sm md:text-base leading-relaxed">
-                Tuloong menjamin kenyamanan Anda dalam bertransaksi maupun mempekerjakan Mitra lewat sistem pengawasan ganda yang terintegrasi.
-              </p>
-
-              <div className="p-5 rounded-2xl bg-white border border-neutral-200/60 shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-                  <ShieldCheck size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-neutral-900 text-sm">100% Mitra Lolos Verifikasi KTP</h4>
-                  <p className="text-neutral-400 text-xs mt-0.5">Semua data identitas dicocokkan secara manual demi menghindari tindak kejahatan.</p>
-                </div>
+            <div className="p-6 rounded-[2rem] bg-neutral-50 border border-neutral-100 flex items-start gap-5">
+              <div className="w-12 h-12 bg-emerald-100/50 rounded-2xl flex items-center justify-center text-emerald-700 shrink-0 mt-1">
+                <ShieldCheck size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-neutral-900 mb-1">100% Lolos Verifikasi KTP</h4>
+                <p className="text-neutral-500 text-sm leading-relaxed">Semua identitas dicocokkan secara manual demi menghindari tindak kejahatan.</p>
               </div>
             </div>
+          </div>
 
-            <div className="lg:col-span-7 space-y-4">
-              {[
-                {
-                  title: "Sistem Rekening Bersama (Escrow)",
-                  desc: "Dana yang Anda bayar akan ditampung sementara oleh pihak Tuloong. Dana baru akan diteruskan ke rekening Mitra setelah Anda mengonfirmasi pekerjaan telah diselesaikan dengan memuaskan.",
-                  icon: DollarSign,
-                  badge: "Aman Finansial"
-                },
-                {
-                  title: "Sistem Chat Terenkripsi",
-                  desc: "Diskusikan detail tugas secara privat langsung di dalam aplikasi. Chat Anda terlindungi demi kerahasiaan alamat, nomor telepon, dan instruksi pribadi.",
-                  icon: Users,
-                  badge: "Privasi Terjaga"
-                },
-                {
-                  title: "Sistem Rating Dua Arah",
-                  desc: "Baik Pelanggan maupun Mitra saling memberikan review jujur setelah pekerjaan selesai. Ini menjaga ekosistem tetap bersih dari pengguna yang bermasalah.",
-                  icon: Star,
-                  badge: "Kualitas Ekosistem"
-                }
-              ].map((point, index) => {
-                const Icon = point.icon;
-                return (
-                  <div
-                    key={index}
-                    className="p-6 rounded-3xl border border-neutral-200/50 bg-white hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex gap-4 items-start">
-                      <div className="w-10 h-10 bg-neutral-50 rounded-lg flex items-center justify-center text-neutral-600 shrink-0">
-                        <Icon size={18} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="font-bold text-neutral-900 text-sm">{point.title}</h4>
-                          <span className="text-[9px] font-bold text-[#1A5C48] bg-[#1A5C48]/5 px-2 py-0.5 rounded-md">
-                            {point.badge}
-                          </span>
-                        </div>
-                        <p className="text-neutral-500 text-xs mt-2 leading-relaxed">
-                          {point.desc}
-                        </p>
-                      </div>
-                    </div>
+          {/* Right Features List (Clean Minimalist List) */}
+          <div className="lg:col-span-7 flex flex-col justify-center gap-8 md:gap-12">
+            {[
+              {
+                title: "Sistem Rekening Bersama (Escrow)",
+                desc: "Dana yang Anda bayar akan ditampung sementara oleh pihak Tuloong. Dana baru akan diteruskan ke rekening Mitra setelah Anda mengonfirmasi pekerjaan selesai.",
+                icon: DollarSign,
+              },
+              {
+                title: "Sistem Chat Terenkripsi",
+                desc: "Diskusikan detail tugas secara privat langsung di dalam aplikasi. Chat Anda terlindungi demi kerahasiaan alamat, nomor telepon, dan instruksi pribadi.",
+                icon: Users,
+              },
+              {
+                title: "Sistem Rating Dua Arah",
+                desc: "Baik Pelanggan maupun Mitra saling memberikan review jujur setelah pekerjaan selesai. Ini menjaga ekosistem tetap bersih dari pengguna yang bermasalah.",
+                icon: Star,
+              }
+            ].map((point, index) => {
+              const Icon = point.icon;
+              return (
+                <div key={index} className="flex gap-6 md:gap-8 group">
+                  <div className="w-16 h-16 rounded-[2rem] bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-900 shrink-0 group-hover:bg-neutral-950 group-hover:text-white transition-colors duration-300">
+                    <Icon size={24} />
                   </div>
-                );
-              })}
-            </div>
-
+                  <div className="pt-2">
+                    <h4 className="text-xl font-bold text-neutral-900 mb-2">{point.title}</h4>
+                    <p className="text-neutral-500 text-base leading-relaxed max-w-lg">
+                      {point.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* ══ DONATION & COMMUNITY SUPPORT ════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-neutral-50/50 border-t border-neutral-100">
+      <section id="donasi" className="py-32 px-6 scroll-mt-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="text-xs font-bold text-[#F2632A] tracking-widest uppercase bg-[#F2632A]/5 px-3 py-1 rounded-full">
+            <span className="text-xs font-semibold text-[#F2632A] tracking-[0.2em] uppercase mb-4 block">
               Dukungan Komunitas
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mt-4 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-neutral-950 mt-4 tracking-tight">
               Bantu Tuloong Terus Berkembang
             </h2>
             <p className="text-neutral-500 text-sm mt-2 leading-relaxed">
@@ -401,7 +361,7 @@ export default function LandingClient() {
       </section>
 
       {/* ══ FOOTER ══════════════════════════════════════════════════════════ */}
-      <footer className="bg-white border-t border-neutral-100 py-8 px-6">
+      <footer className="py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-neutral-400 text-xs">
             © {new Date().getFullYear()} Tuloong. Hak cipta dilindungi.
