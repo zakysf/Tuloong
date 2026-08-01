@@ -77,7 +77,7 @@ export default function AdminVerifikasiMitraPage() {
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >
-                {status === "pending_update" ? "Perbaikan 🔄" : status}
+                {status === "pending_update" ? "Perbaikan" : status}
               </button>
             ))}
           </div>
