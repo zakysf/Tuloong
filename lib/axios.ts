@@ -74,11 +74,13 @@ api.interceptors.response.use(
       // Jika retry gagal atau sudah retry, baru logout
       clearToken();
       if (typeof window !== "undefined") {
+        alert("Sesi Anda telah berakhir atau tidak valid. Silakan login kembali.");
         window.location.href = "/login";
       }
     } else if (error.response?.status === 403) {
       // Token swapped or role mismatched - force sync by going home
       if (typeof window !== "undefined") {
+        alert("Anda tidak memiliki akses ke halaman ini. Kembali ke beranda.");
         window.location.href = "/";
       }
     }
