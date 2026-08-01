@@ -179,7 +179,7 @@ Route::get('/email/verify/{id}/{hash}', function ($id, $hash, Illuminate\Http\Re
         $user->markEmailAsVerified();
         event(new Illuminate\Auth\Events\Verified($user));
     }
-    return redirect('http://localhost:3000/login?verified=1');
+    return redirect(config('app.frontend_url', 'http://localhost:3000') . '/login?verified=1');
 })->name('verification.verify');
 
 if (app()->environment('local')) {

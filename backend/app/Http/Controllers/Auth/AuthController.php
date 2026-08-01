@@ -159,7 +159,11 @@ class AuthController extends Controller
         // Cek verifikasi mitra
         if ($user->role === 'mitra') {
             $user->load('mitraProfile');
-            if ($user->mitraProfile && $user->mitraProfile->verification_status !== 'aktif') {
+            $status = $user->mitraProfile?->verification_status;
+
+            // Hanya mitra 'pending' yang diblokir login
+            // Mitra 'ditolak' & 'pending_update' tetap bisa login untuk perbaiki pendaftaran
+            if ($status === 'pending') {
                 Auth::logout();
                 return response()->json([
                     'success' => false,
