@@ -67,7 +67,7 @@ export default function AdminVerifikasiMitraPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex bg-gray-100 p-1 rounded-xl">
-            {["pending", "aktif", "ditolak"].map((status) => (
+            {["pending", "pending_update", "aktif", "ditolak"].map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
@@ -77,7 +77,7 @@ export default function AdminVerifikasiMitraPage() {
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >
-                {status}
+                {status === "pending_update" ? "Perbaikan 🔄" : status}
               </button>
             ))}
           </div>
@@ -183,7 +183,7 @@ export default function AdminVerifikasiMitraPage() {
                 </p>
               </div>
 
-              {selectedMitra.mitra_profile?.verification_status === "pending" && (
+              {["pending", "pending_update"].includes(selectedMitra.mitra_profile?.verification_status ?? "") && (
                 <div className="pt-6 border-t border-gray-100">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Alasan Penolakan (Hanya jika menolak)</label>
                   <textarea
@@ -196,7 +196,7 @@ export default function AdminVerifikasiMitraPage() {
               )}
             </div>
 
-            {selectedMitra.mitra_profile?.verification_status === "pending" && (
+            {["pending", "pending_update"].includes(selectedMitra.mitra_profile?.verification_status ?? "") && (
               <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
                 <Button 
                   variant="outline"
