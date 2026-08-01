@@ -122,7 +122,10 @@ export default function ChatPage() {
           ) : (
             messages.map((msg) => {
               const isMe = Number(msg.sender_id) === Number(user?.id);
-              const time = new Date(msg.created_at).toLocaleTimeString("id-ID", {
+              // Hapus "Z" di akhir string agar JavaScript menganggapnya sebagai waktu lokal server (WIB),
+              // bukan waktu UTC yang akan ditambah 7 jam lagi.
+              const localTimeStr = msg.created_at.replace("Z", "");
+              const time = new Date(localTimeStr).toLocaleTimeString("id-ID", {
                 hour: "2-digit",
                 minute: "2-digit",
               });
