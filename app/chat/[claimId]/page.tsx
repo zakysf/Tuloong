@@ -121,7 +121,7 @@ export default function ChatPage() {
             </div>
           ) : (
             messages.map((msg) => {
-              const isMe = msg.sender_id === user?.id;
+              const isMe = Number(msg.sender_id) === Number(user?.id);
               const time = new Date(msg.created_at).toLocaleTimeString("id-ID", {
                 hour: "2-digit",
                 minute: "2-digit",
