@@ -88,7 +88,7 @@ export default function PelangganProfilPage() {
               ) : (
                 <UserCircle className="w-full h-full text-gray-400 p-2" />
               )}
-              <label className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white text-xs font-medium cursor-pointer transition-opacity">
+              <label className="absolute inset-0 flex items-center justify-center bg-black/40 md:bg-black/50 text-white text-xs font-medium cursor-pointer transition-opacity opacity-100 md:opacity-0 md:group-hover:opacity-100">
                 Ubah
                 <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
               </label>

@@ -60,7 +60,11 @@ class ChatController extends Controller
         $message->load('sender:id,nama,role,foto_profil');
 
         // Broadcast event ke channel real-time
-        broadcast(new MessageSent($message))->toOthers();
+        try {
+            broadcast(new MessageSent($message))->toOthers();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Gagal broadcast pesan: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,

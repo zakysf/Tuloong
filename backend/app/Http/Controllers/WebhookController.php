@@ -49,6 +49,15 @@ class WebhookController extends Controller
         // Update status transaksi berdasarkan status Midtrans
         if (in_array($transactionStatus, ['settlement', 'capture'])) {
             $transaction->update(['status' => 'paid']);
+            
+            // Otomatis ubah status post dan claim agar mitra bisa mulai bekerja
+            if ($transaction->post) {
+                $transaction->post->update(['status' => 'in_progress']);
+            }
+            if ($transaction->claim) {
+                $transaction->claim->update(['status' => 'on_the_way']);
+            }
+
             Log::info('Transaksi berhasil dibayar', ['order_id' => $orderId]);
         } elseif (in_array($transactionStatus, ['expire', 'cancel', 'deny'])) {
             // Status dikembalikan ke pending agar pelanggan bisa coba bayar ulang
